@@ -3,7 +3,7 @@ plugins {
     id 'java'
 }
 
-group 'org.example'
+group 'com.jobarth'
 version '1.0-SNAPSHOT'
 
 repositories {
@@ -11,6 +11,7 @@ repositories {
 }
 
 dependencies {
+    implementation project(':deutsche-bahn-data-domain')
     implementation 'org.codehaus.groovy:groovy-all:2.3.11'
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
