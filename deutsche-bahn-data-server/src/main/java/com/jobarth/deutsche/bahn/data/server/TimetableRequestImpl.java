@@ -1,6 +1,6 @@
 package com.jobarth.deutsche.bahn.data.server;
 
-import com.jobarth.deutsche.bahn.data.server.domain.Timetable;
+import com.jobarth.deutsche.bahn.data.domain.Timetable;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

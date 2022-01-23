@@ -1,6 +1,6 @@
 package com.jobarth.deutsche.bahn.data.server;
 
-import com.jobarth.deutsche.bahn.data.server.domain.Timetable;
+import com.jobarth.deutsche.bahn.data.domain.Timetable;
 import org.xml.sax.SAXException;
 
 import javax.xml.parsers.ParserConfigurationException;
