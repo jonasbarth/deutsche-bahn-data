@@ -11,10 +11,14 @@ repositories {
 }
 
 dependencies {
+    implementation("com.google.guava:guava:31.0.1-jre")
     implementation 'org.codehaus.groovy:groovy-all:2.3.11'
+
+    testImplementation("org.assertj:assertj-core:3.11.1")
     testImplementation group: 'junit', name: 'junit', version: '4.12'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine'
+    testImplementation 'org.mockito:mockito-core:2.1.0'
 }
 
 test {
