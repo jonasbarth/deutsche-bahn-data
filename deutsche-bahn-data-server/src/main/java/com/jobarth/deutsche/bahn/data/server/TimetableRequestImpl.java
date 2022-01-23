@@ -43,28 +43,12 @@ public class TimetableRequestImpl implements TimetableRequest {
                 .uri(URI.create(String.format(REQUEST_URL_FORMAT, evaNo, String.format(DATE_FORMAT, year, month, day), hour)))
                 .header("Authorization", "Bearer dec0445e9c29bf5bc4e8c1641c6ba1fc")
                 .build();
+
         HttpClient httpClient = HttpClient.newHttpClient();
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
-        DocumentBuilderFactory factory =
-                DocumentBuilderFactory.newInstance();
-        DocumentBuilder builder = factory.newDocumentBuilder();
-
-        StringBuilder xmlStringBuilder = new StringBuilder();
-        xmlStringBuilder.append(response.body());
-        ByteArrayInputStream input = new ByteArrayInputStream(
-                xmlStringBuilder.toString().getBytes("UTF-8"));
-        Document doc = builder.parse(input);
-        Element root = doc.getDocumentElement();
-
-        NodeList timetableStops = doc.getDocumentElement().getChildNodes(); //gets me the list of timetable stops
-        Node firstTimeTableStop = timetableStops.item(0); //gets me the content of the first timetable stop
-        Node tripLabel = firstTimeTableStop.getChildNodes().item(0); //trip label
-
-        Node arrival = firstTimeTableStop.getChildNodes().item(1); //arrival node
-        Node departure = firstTimeTableStop.getChildNodes().item(2); //
-
-        //create an interface timetable parser with an implementation of XML timetable parser
+        XmlTimetableParser parser = new XmlTimetableParser(response.body());
+        parser.parseTimetableStops();
         return null;
     }
 
