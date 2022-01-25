@@ -9,7 +9,7 @@ import java.util.Objects;
 public class TimetableStopImpl implements TimetableStop {
 
     private final String id;
-    private final Station station;
+    private final TripLabel tripLabel;
     private final LocalDateTime plannedArrival;
     private LocalDateTime actualArrival;
     private final LocalDateTime plannedDeparture;
@@ -17,14 +17,14 @@ public class TimetableStopImpl implements TimetableStop {
     private final Platform plannedPlatform;
     private Platform actualPlatform;
 
-    public TimetableStopImpl(String id, Station station, LocalDateTime plannedArrival, LocalDateTime plannedDeparture, Platform plannedPlatform) {
+    public TimetableStopImpl(String id, TripLabel tripLabel, LocalDateTime plannedArrival, LocalDateTime plannedDeparture, Platform plannedPlatform) {
         Objects.requireNonNull(id, "The ID must not be null");
-        Objects.requireNonNull(station, "The station must not be null");
+        Objects.requireNonNull(tripLabel, "The tripLabel must not be null");
         Objects.requireNonNull(plannedArrival, "The planned arrival must not be null");
         Objects.requireNonNull(plannedDeparture, "The planned departure must not be null");
         Objects.requireNonNull(plannedPlatform, "The planned platform must not be null");
         this.id = id;
-        this.station = station;
+        this.tripLabel = tripLabel;
         this.plannedArrival = plannedArrival;
         this.plannedDeparture = plannedDeparture;
         this.plannedPlatform = plannedPlatform;
@@ -40,8 +40,8 @@ public class TimetableStopImpl implements TimetableStop {
     }
 
     @Override
-    public Station getStation() {
-        return station;
+    public TripLabel getTripLabel() {
+        return tripLabel;
     }
 
     @Override

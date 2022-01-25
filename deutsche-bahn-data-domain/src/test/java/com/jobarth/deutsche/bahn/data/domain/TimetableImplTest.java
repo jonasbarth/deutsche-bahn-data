@@ -22,9 +22,16 @@ public class TimetableImplTest {
 
     @BeforeEach
     public void beforeEach() {
-        timetable = new TimetableImpl();
+        timetable = new TimetableImpl(BERLIN_HBF);
         LocalDateTime now = LocalDateTime.now();
-        initialTimetableStop = mockTimetableStop(BERLIN_HBF, now.minusMinutes(15), now.minusMinutes(15), now.minusMinutes(10), now.minusMinutes(10));
+        initialTimetableStop = mockTimetableStop(now.minusMinutes(15), now.minusMinutes(15), now.minusMinutes(10), now.minusMinutes(10));
+    }
+
+    @Test
+    public void testThatExceptionThrownNullStation() {
+        assertThatThrownBy(() -> new TimetableImpl(null))
+                .isInstanceOf(NullPointerException.class)
+                .hasMessage("The station must not be null");
     }
 
     @Test
@@ -32,22 +39,6 @@ public class TimetableImplTest {
         assertThatThrownBy(() -> timetable.addTimetableStop(null))
                 .isInstanceOf(NullPointerException.class)
                 .hasMessage("The timetableStop must not be null");
-    }
-
-    @Test
-    public void testThatExceptionThrownForTimetableStopWithDifferentStation() {
-        timetable.addTimetableStop(initialTimetableStop);
-        TimetableStop timetableStopToThrowException = mock(TimetableStopImpl.class);
-        when(timetableStopToThrowException.getStation()).thenReturn(AACHEN_HBF);
-
-        assertThatThrownBy(() -> timetable.addTimetableStop(timetableStopToThrowException))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("The station of the time table stop does not match the already existing station of the timetable");
-    }
-
-    @Test
-    public void testThatGetStationReturnsNullWhenNoTimetableStopsAdded() {
-        assertThat(timetable.getStation()).isEqualTo(null);
     }
 
     @Test
@@ -61,7 +52,6 @@ public class TimetableImplTest {
     public void testThatGetAllTimetableStopsReturnsAllTimetableStops() {
         timetable.addTimetableStop(initialTimetableStop);
         TimetableStop timetableStop = mock(TimetableStopImpl.class);
-        when(timetableStop.getStation()).thenReturn(BERLIN_HBF);
 
         timetable.addTimetableStop(timetableStop);
 
@@ -71,7 +61,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetPlannedDepartureBeforeDate() {
         when(initialTimetableStop.getPlannedDeparture()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, null, null, LocalDateTime.now().plusMinutes(10), null);
+        TimetableStop timetableStop = mockTimetableStop( null, null, LocalDateTime.now().plusMinutes(10), null);
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -82,7 +72,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetPlannedDepartureAfterDate() {
         when(initialTimetableStop.getPlannedDeparture()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, null, null, LocalDateTime.now().plusMinutes(10), null);
+        TimetableStop timetableStop = mockTimetableStop( null, null, LocalDateTime.now().plusMinutes(10), null);
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -93,7 +83,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetActualDepartureBeforeDate() {
         when(initialTimetableStop.getPlannedDeparture()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, null, null, null, LocalDateTime.now().plusMinutes(10));
+        TimetableStop timetableStop = mockTimetableStop( null, null, null, LocalDateTime.now().plusMinutes(10));
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -104,7 +94,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetActualDepartureAfterDate() {
         when(initialTimetableStop.getPlannedDeparture()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, null, null, null, LocalDateTime.now().plusMinutes(10));
+        TimetableStop timetableStop = mockTimetableStop( null, null, null, LocalDateTime.now().plusMinutes(10));
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -115,7 +105,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetActualArrivalBeforeDate() {
         when(initialTimetableStop.getActualArrival()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, null, LocalDateTime.now().plusMinutes(10), null, null);
+        TimetableStop timetableStop = mockTimetableStop( null, LocalDateTime.now().plusMinutes(10), null, null);
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -126,7 +116,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetPlannedArrivalBeforeDate() {
         when(initialTimetableStop.getPlannedArrival()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, LocalDateTime.now().plusMinutes(10), null, null, null);
+        TimetableStop timetableStop = mockTimetableStop( LocalDateTime.now().plusMinutes(10), null, null, null);
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -137,7 +127,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetActualArrivalAfterDate() {
         when(initialTimetableStop.getActualArrival()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, null, LocalDateTime.now().plusMinutes(10), null, null);
+        TimetableStop timetableStop = mockTimetableStop( null, LocalDateTime.now().plusMinutes(10), null, null);
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -148,7 +138,7 @@ public class TimetableImplTest {
     @Test
     public void testThatGetPlannedArrivalAfterDate() {
         when(initialTimetableStop.getPlannedArrival()).thenReturn(LocalDateTime.now().minusMinutes(10));
-        TimetableStop timetableStop = mockTimetableStop(BERLIN_HBF, LocalDateTime.now().plusMinutes(10),null,  null, null);
+        TimetableStop timetableStop = mockTimetableStop( LocalDateTime.now().plusMinutes(10),null,  null, null);
 
         timetable.addTimetableStop(initialTimetableStop);
         timetable.addTimetableStop(timetableStop);
@@ -157,9 +147,8 @@ public class TimetableImplTest {
     }
 
 
-    private TimetableStop mockTimetableStop(Station station, LocalDateTime plannedArrival, LocalDateTime actualArrival, LocalDateTime plannedDeparture, LocalDateTime actualDeparture) {
+    private TimetableStop mockTimetableStop(LocalDateTime plannedArrival, LocalDateTime actualArrival, LocalDateTime plannedDeparture, LocalDateTime actualDeparture) {
         TimetableStop timetableStop = mock(TimetableStop.class);
-        when(timetableStop.getStation()).thenReturn(station);
         when(timetableStop.getPlannedArrival()).thenReturn(plannedArrival);
         when(timetableStop.getActualArrival()).thenReturn(actualArrival);
         when(timetableStop.getPlannedDeparture()).thenReturn(plannedDeparture);

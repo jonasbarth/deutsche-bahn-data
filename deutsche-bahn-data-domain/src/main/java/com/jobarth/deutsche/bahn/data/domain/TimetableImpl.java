@@ -14,31 +14,22 @@ import java.util.stream.Collectors;
 public class TimetableImpl implements Timetable {
 
     private final Collection<TimetableStop> timetableStops = Lists.newLinkedList();
+    private final Station station;
+
+    public TimetableImpl(Station station) {
+        Objects.requireNonNull(station, "The station must not be null");
+        this.station = station;
+    }
 
     @Override
     public void addTimetableStop(TimetableStop timetableStop) {
         Objects.requireNonNull(timetableStop, "The timetableStop must not be null");
-        if (timetableStops.isEmpty()) {
-            timetableStops.add(timetableStop);
-            return;
-        }
-
-        boolean matchesAllStations = timetableStops.stream()
-                .map(TimetableStop::getStation)
-                .allMatch(station -> timetableStop.getStation().equals(station));
-        if (matchesAllStations) {
-            timetableStops.add(timetableStop);
-            return;
-        }
-        throw new IllegalArgumentException("The station of the time table stop does not match the already existing station of the timetable");
+        timetableStops.add(timetableStop);
     }
 
     @Override
     public Station getStation() {
-        if (timetableStops.isEmpty()) {
-            return null;
-        }
-        return timetableStops.stream().findFirst().get().getStation();
+        return station;
     }
 
     @Override

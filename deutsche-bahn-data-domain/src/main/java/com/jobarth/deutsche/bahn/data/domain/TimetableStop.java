@@ -13,9 +13,9 @@ public interface TimetableStop {
     public String getId();
 
     /**
-     * @return the {@link Station} of the stop. Will not return {@code null}.
+     * @return the {@link TripLabel} of this timetable stop.
      */
-    public Station getStation();
+    public TripLabel getTripLabel();
 
     /**
      * @return the planned arrival as a {@link LocalDateTime} to this stop. Will not return {@code null}.
