@@ -1,22 +1,17 @@
 package com.jobarth.deutsche.bahn.data.server;
 
+import com.jobarth.deutsche.bahn.data.domain.Change;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.Collection;
 
 /**
  * Implementation of {@link TimetableRequest}.
@@ -25,7 +20,10 @@ public class TimetableRequestImpl implements TimetableRequest {
 
     private final String evaNo;
     private static final String DATE_FORMAT = "%s%s%s";
-    private static final String REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/plan/%s/%s/%s";
+    private static final String PLAN_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/plan/%s/%s/%s";
+    private static final String FUTURE_CHANGES_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/fchg/%s";
+    private static final String RECENT_CHANGES_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/rchg/%s";
+
 
     public TimetableRequestImpl(String evaNo) {
         this.evaNo = evaNo;
@@ -40,7 +38,7 @@ public class TimetableRequestImpl implements TimetableRequest {
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
-                .uri(URI.create(String.format(REQUEST_URL_FORMAT, evaNo, String.format(DATE_FORMAT, year, month, day), hour)))
+                .uri(URI.create(String.format(PLAN_REQUEST_URL_FORMAT, evaNo, String.format(DATE_FORMAT, year, month, day), hour)))
                 .header("Authorization", "Bearer dec0445e9c29bf5bc4e8c1641c6ba1fc")
                 .build();
 
@@ -48,18 +46,42 @@ public class TimetableRequestImpl implements TimetableRequest {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
         XmlTimetableParser parser = new XmlTimetableParser(response.body());
-        parser.parseTimetableStops();
+        parser.parsePlannedTimetableStops();
         return null;
     }
 
     @Override
-    public Timetable getRecentChanges() {
-        return null;
+    public Collection<Change> getRecentChanges() throws IOException, InterruptedException, ParserConfigurationException, SAXException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(String.format(RECENT_CHANGES_REQUEST_URL_FORMAT, evaNo)))
+                .header("Authorization", "Bearer dec0445e9c29bf5bc4e8c1641c6ba1fc")
+                .build();
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        TimetableParser parser = new XmlTimetableParser(response.body());
+        return parser.parseChanges();
+    }
+
+    @Override
+    public Collection<Change> getFutureChanges() throws IOException, InterruptedException, ParserConfigurationException, SAXException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .GET()
+                .uri(URI.create(String.format(FUTURE_CHANGES_REQUEST_URL_FORMAT, evaNo)))
+                .header("Authorization", "Bearer dec0445e9c29bf5bc4e8c1641c6ba1fc")
+                .build();
+
+        HttpClient httpClient = HttpClient.newHttpClient();
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        TimetableParser parser = new XmlTimetableParser(response.body());
+        return parser.parseChanges();
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, ParserConfigurationException, SAXException {
         String berlinEva = "8011160";
         TimetableRequest timetableRequest = new TimetableRequestImpl(berlinEva);
-        timetableRequest.getPlan(LocalDateTime.now());
+        //timetableRequest.getPlan(LocalDateTime.now());
+        timetableRequest.getRecentChanges();
     }
 }

@@ -1,7 +1,6 @@
 package com.jobarth.deutsche.bahn.data.domain;
 
 import org.junit.jupiter.api.Test;
-import org.mockito.internal.matchers.Null;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;

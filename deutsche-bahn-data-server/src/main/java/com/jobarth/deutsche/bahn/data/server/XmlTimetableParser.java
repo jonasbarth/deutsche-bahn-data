@@ -1,6 +1,7 @@
 package com.jobarth.deutsche.bahn.data.server;
 
 import com.google.common.collect.Lists;
+import com.jobarth.deutsche.bahn.data.domain.Change;
 import com.jobarth.deutsche.bahn.data.domain.TimetableStop;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -27,7 +28,7 @@ public class XmlTimetableParser implements TimetableParser {
     }
 
     @Override
-    public Collection<TimetableStop> parseTimetableStops() throws IOException, ParserConfigurationException, SAXException {
+    public Collection<TimetableStop> parsePlannedTimetableStops() throws IOException, ParserConfigurationException, SAXException {
 
         DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = factory.newDocumentBuilder();
@@ -42,8 +43,30 @@ public class XmlTimetableParser implements TimetableParser {
             TimetableStopParser timetableStopParser = new XmlTimetableStopParser(timetableStop);
             //create timetable stop object
 
-            parsedTimetableStops.add(timetableStopParser.parseTimetableStop());
+            parsedTimetableStops.add(timetableStopParser.parsePlannedTimetableStop());
         }
         return parsedTimetableStops;
+    }
+
+    @Override
+    public Collection<Change> parseChanges() throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = factory.newDocumentBuilder();
+        ByteArrayInputStream input = new ByteArrayInputStream(xmlBody.getBytes(StandardCharsets.UTF_8));
+        Document doc = builder.parse(input);
+        Element root = doc.getDocumentElement();
+
+        Collection<Change> parsedChanges = Lists.newArrayListWithCapacity(root.getChildNodes().getLength());
+
+        for (int i = 0; i < root.getChildNodes().getLength(); i++) {
+            Node timetableStop = root.getChildNodes().item(i);
+            if (timetableStop.getNodeName().equals("s")) {
+                TimetableStopParser timetableStopParser = new XmlTimetableStopParser(timetableStop);
+                //create timetable stop object
+
+                parsedChanges.add(timetableStopParser.parseChangedTimetableStop());
+            }
+        }
+        return parsedChanges;
     }
 }

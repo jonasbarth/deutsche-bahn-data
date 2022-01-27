@@ -28,7 +28,6 @@ public class TimetableStopImpl implements TimetableStop {
         this.plannedArrival = plannedArrival;
         this.plannedDeparture = plannedDeparture;
         this.plannedPlatform = plannedPlatform;
-
         this.actualArrival = plannedArrival;
         this.actualDeparture = plannedDeparture;
         this.actualPlatform = plannedPlatform;

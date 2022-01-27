@@ -1,5 +1,6 @@
 package com.jobarth.deutsche.bahn.data.server;
 
+import com.jobarth.deutsche.bahn.data.domain.Change;
 import com.jobarth.deutsche.bahn.data.domain.TimetableStop;
 import org.xml.sax.SAXException;
 
@@ -15,5 +16,7 @@ public interface TimetableParser {
     /**
      * @return a {@link Collection} that contains all {@link TimetableStop} in a response from the timetable REST API.
      */
-    public Collection<TimetableStop> parseTimetableStops() throws IOException, ParserConfigurationException, SAXException;
+    public Collection<TimetableStop> parsePlannedTimetableStops() throws IOException, ParserConfigurationException, SAXException;
+
+    public Collection<Change> parseChanges() throws ParserConfigurationException, IOException, SAXException;
 }
