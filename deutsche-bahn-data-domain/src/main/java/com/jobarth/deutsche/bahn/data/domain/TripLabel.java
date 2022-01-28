@@ -1,10 +1,15 @@
 package com.jobarth.deutsche.bahn.data.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "tl")
 public class TripLabel {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(TripLabel.class);
 
     private String filterFlag;
     private String tripType;
@@ -77,6 +82,7 @@ public class TripLabel {
         if (tripLabel == null) {
             return;
         }
+        LOGGER.info("Updating the trip label.");
         this.setFilterFlag(tripLabel.getFilterFlag());
         this.setOwner(tripLabel.getOwner());
         this.setTripCategory(tripLabel.getTripCategory());

@@ -1,5 +1,8 @@
 package com.jobarth.deutsche.bahn.data.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -8,6 +11,8 @@ import java.util.Objects;
 
 @XmlRootElement(name = "timetable")
 public class Timetable {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(Timetable.class);
 
     private List<TimetableStop> timetableStops;
     private String station;
@@ -43,6 +48,7 @@ public class Timetable {
         if (!timetable.getStation().equals(this.station)) {
             throw new IllegalArgumentException(String.format("The timetables must have the same station. Station of timetable to be updated: %s =/= %s station of provided timetable.", this.station, timetable.getStation()));
         }
+        LOGGER.info("Updating the timetable of station {}.", this.station);
         for (TimetableStop timetableStopUpdate : timetable.getTimetableStops()) {
             for (TimetableStop timetableStop : this.timetableStops) {
                 if (timetableStopUpdate.getId().equals(timetableStop.getId())) {

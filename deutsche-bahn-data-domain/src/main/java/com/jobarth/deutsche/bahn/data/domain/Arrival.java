@@ -1,10 +1,15 @@
 package com.jobarth.deutsche.bahn.data.domain;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement(name = "ar")
 public class Arrival {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(Arrival.class);
 
     private String changedTime;
     private String changedPlatform;
@@ -88,6 +93,7 @@ public class Arrival {
         if (arrival == null) {
             return;
         }
+        LOGGER.info("Updating the arrival.");
         this.setPlannedPath(arrival.getPlannedPath());
         this.setPlannedTime(arrival.getPlannedTime());
         this.setPlannedPlatform(arrival.getPlannedPlatform());
