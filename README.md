@@ -42,6 +42,7 @@ By comparing the planned arrival and departure time to the actual arrival and de
 * actual departure time ->  query the recent changes of the station /rchg/{evaNo} and update the planned departure time
 
 # Algorithm
-* Fetch planned arrival and departure time for a station (once per day)
-* Continuously update the planned arrival and departure time by fetching recently changed data
-
+* For each station, construct an instance of TimeTableRequest
+* For each station, schedule a request once per day to get the plan and for future known changes
+* For each station, schedule a request once per minute to get the recent changes.
+* Once per day, write the timetable into the database
