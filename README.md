@@ -46,3 +46,8 @@ By comparing the planned arrival and departure time to the actual arrival and de
 * For each station, schedule a request once per day to get the plan and for future known changes
 * For each station, schedule a request once per minute to get the recent changes.
 * Once per day, write the timetable into the database
+
+## How do schedule jobs?
+* Schedule a single job that just goes through a queue of plan requests to be run
+* Schedule a single job that goes through a queue of future changes requests to be run
+* Schedule one job per station that runs the recent changes once per minute

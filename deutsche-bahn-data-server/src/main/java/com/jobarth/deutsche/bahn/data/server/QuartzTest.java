@@ -1,9 +1,6 @@
 package com.jobarth.deutsche.bahn.data.server;
 
-import org.quartz.JobDetail;
-import org.quartz.Scheduler;
-import org.quartz.SchedulerException;
-import org.quartz.Trigger;
+import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
 import static org.quartz.JobBuilder.*;
 import static org.quartz.TriggerBuilder.*;
@@ -29,18 +26,15 @@ public class QuartzTest {
             Trigger trigger = newTrigger()
                     .withIdentity("trigger1", "group1")
                     .startNow()
-                    .withSchedule(simpleSchedule()
-                            .withIntervalInSeconds(40)
-                            .repeatForever())
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * ? * * *"))
                     .build();
 
             // Tell quartz to schedule the job using our trigger
             scheduler.scheduleJob(job, trigger);
+            // as long as you don't shutdown the scheduler, it will keep running
+            //scheduler.shutdown();
 
-            Thread.sleep(60000);
-            scheduler.shutdown();
-
-        } catch (SchedulerException | InterruptedException se) {
+        } catch (SchedulerException se) {
             se.printStackTrace();
         }
     }
