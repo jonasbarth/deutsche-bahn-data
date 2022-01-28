@@ -1,67 +1,71 @@
 package com.jobarth.deutsche.bahn.data.domain;
 
-import java.time.LocalDateTime;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 
-/**
- * A single stop of a train made on its journey. Multiple TimetableStops make up a Timetable.
- */
-public interface TimetableStop {
+@XmlRootElement(name = "s")
+public class TimetableStop {
 
-    /**
-     * @return the unique ID of this timetable stop.
-     */
-    public String getId();
+    private String id;
+    private Arrival arrival;
+    private Departure departure;
+    private TripLabel tripLabel;
 
-    /**
-     * @return the {@link TripLabel} of this timetable stop.
-     */
-    public TripLabel getTripLabel();
+    public TimetableStop(String id, Arrival arrival, Departure departure, TripLabel tripLabel) {
+        this.id = id;
+        this.arrival = arrival;
+        this.departure = departure;
+        this.tripLabel = tripLabel;
+    }
 
-    /**
-     * @return the planned arrival as a {@link LocalDateTime} to this stop. Will not return {@code null}.
-     */
-    public LocalDateTime getPlannedArrival();
+    public TimetableStop() {
+    }
 
-    /**
-     * @return the actual arrival as a {@link LocalDateTime} to this stop. Will not return {@code null}.
-     */
-    public LocalDateTime getActualArrival();
+    @XmlElement(name = "tl")
+    public TripLabel getTripLabel() {
+        return tripLabel;
+    }
 
-    /**
-     * Updates the current planned arrival as a {@link LocalDateTime} time of the train to the stop.
-     * @param newArrival the new arrival as a{@link LocalDateTime} time of the train to the stop.
-     */
-    public void setNewArrival(LocalDateTime newArrival);
+    public void setTripLabel(TripLabel tripLabel) {
+        this.tripLabel = tripLabel;
+    }
 
-    /**
-     * @return the planned departure as a {@link LocalDateTime} from this stop. Will not return {@code null}.
-     */
-    public LocalDateTime getPlannedDeparture();
+    @XmlElement(name = "dp")
+    public Departure getDeparture() {
+        return departure;
+    }
 
-    /**
-     * @return the actual departure as a {@link LocalDateTime} from this stop. Will not return {@code null}.
-     */
-    public LocalDateTime getActualDeparture();
+    public void setDeparture(Departure departure) {
+        this.departure = departure;
+    }
 
-    /**
-     * Updates the current planned departure {@link LocalDateTime} time of the train from the stop.
-     * @param newDeparture the new departure as {@link LocalDateTime} time of the train from the stop.
-     */
-    public void setNewDeparture(LocalDateTime newDeparture);
+    @XmlAttribute(name = "id")
+    public String getId() {
+        return id;
+    }
 
-    /**
-     * @return the planned {@link Platform} of this stop. Will not return {@code null}.
-     */
-    public Platform getPlannedPlatform();
+    @XmlElement(name = "ar")
+    public Arrival getArrival() {
+        return this.arrival;
+    }
 
-    /**
-     * @return the actual {@link Platform} of this stop. Will not return {@code null}.
-     */
-    public Platform getActualPlatform();
+    public void setId(String id) {
+        this.id = id;
+    }
 
-    /**
-     * Updates the current planned {@link Platform} of the train at the stop.
-     * @param newPlatform the new {@link Platform} of the train at the stop.
-     */
-    public void setNewPlatform(Platform newPlatform);
+    public void setArrival(Arrival arrival) {
+        this.arrival = arrival;
+    }
+
+    public void update(TimetableStop timetableStop) {
+        Objects.requireNonNull(timetableStop, "timetableStop must not be null");
+        if (!timetableStop.getId().equals(this.id)) {
+            throw new IllegalArgumentException(String.format("The timetable stops must have the same ID. ID of timetable stop to be updated: %s =/= %s ID of provided timetable stop.", this.id, timetableStop.getId()));
+        }
+        this.arrival.update(timetableStop.getArrival());
+        this.departure.update(timetableStop.getDeparture());
+        this.tripLabel.update(timetableStop.getTripLabel());
+    }
 }

@@ -1,10 +1,9 @@
 package com.jobarth.deutsche.bahn.data.server;
 
-import com.jobarth.deutsche.bahn.data.domain.Change;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
-import com.jobarth.deutsche.bahn.data.domain.Station;
 import org.xml.sax.SAXException;
 
+import javax.xml.bind.JAXBException;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.IOException;
 import java.time.LocalDateTime;
@@ -24,19 +23,15 @@ public interface TimetableRequest {
      * @throws ParserConfigurationException
      * @throws SAXException
      */
-    public Timetable getPlan(LocalDateTime datetime) throws IOException, InterruptedException, ParserConfigurationException, SAXException;
+    public Timetable getPlan(LocalDateTime datetime) throws IOException, InterruptedException, JAXBException;
 
     /**
-     * @return a {@link Collection} of recent {@link Change} for the {@link Station} of this request.
+     * @return a {@link Collection} of recent {@link } for the {@link } of this request.
      */
-    public Collection<Change> getRecentChanges() throws IOException, InterruptedException, ParserConfigurationException, SAXException;
+    public Timetable getRecentChanges() throws IOException, InterruptedException, JAXBException;
 
     /**
-     * @return a {@link Collection} of future known {@link Change} for the {@link Station} of this request.
+     * @return a {@link Collection} of future known {@link } for the {@link } of this request.
      */
-    public Collection<Change> getFutureChanges() throws IOException, InterruptedException, ParserConfigurationException, SAXException;
-
-
-
-
+    public Timetable getFutureChanges() throws IOException, InterruptedException, JAXBException;
 }
