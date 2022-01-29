@@ -23,14 +23,22 @@ public class TimetableRequestImpl implements TimetableRequest {
     private final static Logger LOGGER = LoggerFactory.getLogger(TimetableRequestImpl.class);
 
     private final String evaNo;
+    private final TimetableRequestListener timetableRequestListener;
     private static final String DATE_FORMAT = "%s%s%s";
     private static final String PLAN_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/plan/%s/%s/%s";
     private static final String FUTURE_CHANGES_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/fchg/%s";
     private static final String RECENT_CHANGES_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/rchg/%s";
 
 
-    public TimetableRequestImpl(String evaNo) {
+    public TimetableRequestImpl(String evaNo, TimetableRequestListener listener) {
         this.evaNo = evaNo;
+        this.timetableRequestListener = listener;
+    }
+
+
+    @Override
+    public String getEvaNo() {
+        return evaNo;
     }
 
     @Override
@@ -50,20 +58,21 @@ public class TimetableRequestImpl implements TimetableRequest {
 
             case 200:
                 LOGGER.info("Response {} OK. Unmarshalling XML response.", response.statusCode());
+                Timetable timetable = unmarshalResponse(response.body());
+                timetableRequestListener.onPlan(timetable);
                 break;
 
             case 404:
-                LOGGER.info("Response {} Not found.", response.statusCode());
-
+                LOGGER.warn("Response {} Not found. Body {}", response.statusCode(), response.body());
+                break;
             case 500:
-                LOGGER.info("Response {} Internal server error.", response.statusCode());
+                LOGGER.warn("Response {} Internal server error. Body {}", response.statusCode(), response.body());
+                break;
             default:
                 break;
 
         }
-
-        LOGGER.info("Response code {}. Unmarshalling XML response.", response.statusCode());
-        return unmarshalResponse(response.body());
+        return null;
     }
 
     @Override
@@ -77,19 +86,23 @@ public class TimetableRequestImpl implements TimetableRequest {
 
             case 200:
                 LOGGER.info("Response {} OK. Unmarshalling XML response.", response.statusCode());
+                Timetable timetable = unmarshalResponse(response.body());
+                timetableRequestListener.onRecentChanges(timetable);
                 break;
 
             case 404:
-                LOGGER.info("Response {} Not found.", response.statusCode());
-
+                LOGGER.warn("Response {} Not found. Body {}", response.statusCode(), response.body());
+                break;
             case 500:
-                LOGGER.info("Response {} Internal server error.", response.statusCode());
+                LOGGER.warn("Response {} Internal server error. Body {}", response.statusCode(), response.body());
+                break;
             default:
                 break;
 
         }
 
-        return unmarshalResponse(response.body());
+
+        return null;
     }
 
     @Override
@@ -104,26 +117,31 @@ public class TimetableRequestImpl implements TimetableRequest {
 
             case 200:
                 LOGGER.info("Response {} OK. Unmarshalling XML response.", response.statusCode());
+                Timetable timetable = unmarshalResponse(response.body());
+                timetableRequestListener.onFutureChanges(timetable);
                 break;
 
             case 404:
-                LOGGER.info("Response {} Not found.", response.statusCode());
-
+                LOGGER.warn("Response {} Not found. Body {}", response.statusCode(), response.body());
+                break;
             case 500:
-                LOGGER.info("Response {} Internal server error.", response.statusCode());
+                LOGGER.warn("Response {} Internal server error. Body {}", response.statusCode(), response.body());
+                break;
             default:
                 break;
         }
-
-        return unmarshalResponse(response.body());
+        return null;
     }
 
     public static void main(String[] args) throws IOException, InterruptedException, JAXBException {
         String berlinEva = "8011160";
-        TimetableRequest timetableRequest = new TimetableRequestImpl(berlinEva);
+        TimetableRequest timetableRequest = new TimetableRequestImpl(berlinEva, null);
         Timetable plan = timetableRequest.getPlan(LocalDateTime.now());
-        Timetable futureChanges = timetableRequest.getFutureChanges();
-        plan.updateTimetable(futureChanges);
+        Timetable plan2 = timetableRequest.getPlan(LocalDateTime.now().plusHours(1));
+
+        plan.extend(plan2);
+        //Timetable futureChanges = timetableRequest.getFutureChanges();
+        //plan.updateTimetable(futureChanges);
     }
 
     private HttpRequest buildRequest(String uri) {

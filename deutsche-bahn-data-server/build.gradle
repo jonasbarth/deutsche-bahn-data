@@ -12,6 +12,8 @@ repositories {
 
 dependencies {
     implementation project(':deutsche-bahn-data-domain')
+    implementation project(':deutsche-bahn-data-db')
+
     implementation 'org.quartz-scheduler:quartz:2.3.2'
 
     implementation 'org.slf4j:slf4j-api:1.7.35'

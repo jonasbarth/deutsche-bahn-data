@@ -51,3 +51,5 @@ By comparing the planned arrival and departure time to the actual arrival and de
 * Schedule a single job that just goes through a queue of plan requests to be run
 * Schedule a single job that goes through a queue of future changes requests to be run
 * Schedule one job per station that runs the recent changes once per minute
+
+* Schedule one job to run 24 times, every 3 seconds.

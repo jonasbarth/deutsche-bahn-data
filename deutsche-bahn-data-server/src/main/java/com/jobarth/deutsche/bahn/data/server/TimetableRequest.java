@@ -12,6 +12,11 @@ import java.time.LocalDateTime;
 public interface TimetableRequest {
 
     /**
+     * @return the eva number of the station for which this request fetches data. Will not return {@code null}.
+     */
+    public String getEvaNo();
+
+    /**
      * Fetches the planned trips for this station.
      * @param datetime the {@link LocalDateTime} for which the API will query a timetable for. Must only be to the hour.
      * @return a {@link Timetable} with the known trips for this station and date time.
