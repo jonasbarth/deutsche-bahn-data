@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @XmlRootElement(name = "timetable")
-public class Timetable {
+public class Timetable implements Cloneable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Timetable.class);
 
