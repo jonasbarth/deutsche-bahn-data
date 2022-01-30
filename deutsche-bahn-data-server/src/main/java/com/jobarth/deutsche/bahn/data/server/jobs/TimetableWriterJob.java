@@ -4,6 +4,7 @@ import com.jobarth.deutsche.bahn.data.db.FileTimetableWriter;
 import com.jobarth.deutsche.bahn.data.db.TimetableWriter;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
 import com.jobarth.deutsche.bahn.data.server.TimetableManagerImpl;
+import com.jobarth.deutsche.bahn.data.server.filter.DepartedTimetableFilter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -15,6 +16,6 @@ public class TimetableWriterJob implements Job {
         TimetableWriter writer = new FileTimetableWriter();
         TimetableManagerImpl timetable = (TimetableManagerImpl) context.getMergedJobDataMap().get("timetable");
 
-        writer.write(timetable.getFirst());
+        writer.write(new DepartedTimetableFilter().apply(timetable.getFirst()));
     }
 }

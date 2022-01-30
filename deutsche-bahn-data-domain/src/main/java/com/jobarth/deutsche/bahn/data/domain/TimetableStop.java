@@ -28,6 +28,13 @@ public class TimetableStop {
     public TimetableStop() {
     }
 
+    public TimetableStop(TimetableStop timetableStop) {
+        this.id = timetableStop.getId();
+        this.arrival = new Arrival(timetableStop.getArrival());
+        this.departure = new Departure(timetableStop.getDeparture());
+        this.tripLabel = new TripLabel(timetableStop.getTripLabel());
+    }
+
     @XmlElement(name = "tl")
     public TripLabel getTripLabel() {
         return tripLabel;

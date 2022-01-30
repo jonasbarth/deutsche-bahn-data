@@ -5,11 +5,14 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @XmlRootElement(name = "dp")
 public class Departure {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Departure.class);
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyMMddHHmm");
 
     private String changedTime;
     private String changedPlatform;
@@ -25,6 +28,15 @@ public class Departure {
         this.plannedPlatform = plannedPlatform;
         this.plannedPath = plannedPath;
         this.changedPath = changedPath;
+    }
+
+    public Departure(Departure departure) {
+        this.changedTime = departure.getChangedTime();
+        this.changedPlatform = departure.getChangedPlatform();
+        this.plannedTime = departure.getPlannedTime();
+        this.plannedPlatform = departure.getPlannedPlatform();
+        this.plannedPath = departure.getPlannedPath();
+        this.changedPath = departure.getChangedPath();
     }
 
     public Departure() {
@@ -101,5 +113,15 @@ public class Departure {
         this.setChangedPlatform(departure.getChangedPlatform());
         this.setChangedTime(departure.getChangedTime());
         this.setChangedPath(departure.getChangedPath());
+    }
+
+    public LocalDateTime getChangedTimeAsLocalDateTime() {
+        if (getChangedTime() != null)
+            return LocalDateTime.parse(getChangedTime(), DATE_TIME_FORMATTER);
+        return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
+    }
+
+    public LocalDateTime getPlannedTimeAsLocalDateTime() {
+        return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
     }
 }

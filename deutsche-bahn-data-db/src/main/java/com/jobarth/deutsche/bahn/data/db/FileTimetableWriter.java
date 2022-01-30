@@ -36,6 +36,14 @@ public class FileTimetableWriter implements TimetableWriter {
         String finalStop = "";
 
         Collection<String> rows = Lists.newArrayListWithCapacity(timetable.getTimetableStops().size());
+        String headerRow = String.join(",", new String[]{"STATION", "EVA_NO", "STOP_ID",
+                "PLANNED_ARRIVAL", "ACTUAL_ARRIVAL",
+                "PLANNED_DEPARTURE", "ACTUAL_DEPARTURE",
+                "PLANNED_ARRIVAL_PLATFORM", "ACTUAL_ARRIVAL_PLATFORM",
+                "PLANNED_DEPARTURE_PLATFORM", "ACTUAL_DEPARTURE_PLATFORM",
+                "TRIP_TYPE", "TRAIN_NUMBER"
+        });
+        rows.add(headerRow);
         
         for (TimetableStop timetableStop: timetable.getTimetableStops()) {
             stopId = timetableStop.getId();

@@ -25,6 +25,14 @@ public class TripLabel {
         this.trainNumber = trainNumber;
     }
 
+    public TripLabel(TripLabel tripLabel) {
+        this.filterFlag = tripLabel.getFilterFlag();
+        this.tripType = tripLabel.getTripType();
+        this.owner = tripLabel.getOwner();
+        this.tripCategory = tripLabel.getTripCategory();
+        this.trainNumber = tripLabel.getTrainNumber();
+    }
+
     public TripLabel() {
     }
 

@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @XmlRootElement(name = "timetable")
-public class Timetable implements Cloneable {
+public class Timetable {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(Timetable.class);
 
@@ -28,6 +28,16 @@ public class Timetable implements Cloneable {
 
     public Timetable() {
         this.timetableStops = Lists.newLinkedList();
+    }
+
+    public Timetable(Timetable timetable) {
+        this.station = timetable.getStation();
+        this.evaNo = timetable.getEvaNo();
+        this.timetableStops = Lists.newArrayListWithCapacity(timetable.getTimetableStops().size());
+        timetable.getTimetableStops().stream()
+            .map(TimetableStop::new)
+            .forEach(timetableStops::add);
+
     }
 
     @XmlElement(name = "s")
@@ -88,4 +98,6 @@ public class Timetable implements Cloneable {
         this.timetableStops.addAll(timetableStopsToAdd);
         LOGGER.info("Extended the time table of station {} with {} timetable stops.", this.station, timetableStopsToAdd.size());
     }
+
+
 }
