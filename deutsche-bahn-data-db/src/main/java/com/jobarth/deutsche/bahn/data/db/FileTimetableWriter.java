@@ -3,6 +3,8 @@ package com.jobarth.deutsche.bahn.data.db;
 import com.google.common.collect.Lists;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
 import com.jobarth.deutsche.bahn.data.domain.TimetableStop;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +16,8 @@ import java.util.Collection;
  */
 public class FileTimetableWriter implements TimetableWriter {
 
+    private final static Logger LOGGER = LoggerFactory.getLogger(FileTimetableWriter.class);
+
     @Override
     public void write(Timetable timetable) {
         //create string that can be written to CSV
@@ -21,16 +25,16 @@ public class FileTimetableWriter implements TimetableWriter {
         String station = timetable.getStation();
         String evaNo = timetable.getEvaNo();
         String stopId;
-        String plannedArrival;
-        String actualArrival;
-        String plannedDeparture;
-        String actualDeparture;
-        String plannedArrivalPlatform;
-        String actualArrivalPlatform;
-        String plannedDeparturePlatform;
-        String actualDeparturePlatform;
-        String tripType;
-        String trainNumber;
+        String plannedArrival = "";
+        String actualArrival = "";
+        String plannedDeparture = "";
+        String actualDeparture = "";
+        String plannedArrivalPlatform = "";
+        String actualArrivalPlatform = "";
+        String plannedDeparturePlatform = "";
+        String actualDeparturePlatform = "";
+        String tripType = "";
+        String trainNumber = "";
         String previousStop = "";
         String nextStop = "";
         String finalStop = "";
@@ -44,17 +48,25 @@ public class FileTimetableWriter implements TimetableWriter {
                 "TRIP_TYPE", "TRAIN_NUMBER"
         });
         rows.add(headerRow);
-        
+
         for (TimetableStop timetableStop: timetable.getTimetableStops()) {
             stopId = timetableStop.getId();
-            plannedArrival = timetableStop.getArrival().getPlannedTime();
-            actualArrival = timetableStop.getArrival().getChangedTime();
-            plannedDeparture = timetableStop.getDeparture().getPlannedTime();
-            actualDeparture = timetableStop.getDeparture().getChangedTime();
-            plannedArrivalPlatform = timetableStop.getArrival().getPlannedPlatform();
-            actualArrivalPlatform = timetableStop.getArrival().getChangedPlatform();
-            plannedDeparturePlatform = timetableStop.getDeparture().getPlannedPlatform();
-            actualDeparturePlatform = timetableStop.getDeparture().getChangedPlatform();
+            LOGGER.info("Writing {} to file.", timetableStop);
+            LOGGER.info("Arrival is {}.", timetableStop.getArrival());
+            if (timetableStop.getArrival() != null) {
+                plannedArrival = timetableStop.getArrival().getPlannedTime();
+                actualArrival = timetableStop.getArrival().getChangedTime();
+                plannedArrivalPlatform = timetableStop.getArrival().getPlannedPlatform();
+                actualArrivalPlatform = timetableStop.getArrival().getChangedPlatform();
+            }
+            LOGGER.info("Departure is {}.", timetableStop.getDeparture());
+            if (timetableStop.getDeparture() != null) {
+                plannedDeparture = timetableStop.getDeparture().getPlannedTime();
+                actualDeparture = timetableStop.getDeparture().getChangedTime();
+                plannedDeparturePlatform = timetableStop.getDeparture().getPlannedPlatform();
+                actualDeparturePlatform = timetableStop.getDeparture().getChangedPlatform();
+            }
+
             tripType = timetableStop.getTripLabel().getTripCategory();
             trainNumber = timetableStop.getTripLabel().getTrainNumber();
 

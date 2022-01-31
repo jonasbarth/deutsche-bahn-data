@@ -68,7 +68,9 @@ public class QuartzTest {
 
             Trigger timetableWriterTrigger = newTrigger()
                     .withIdentity("writer trigger", "8011160")
-                    .startAt(Date.from(Instant.now().plus(3, ChronoUnit.MINUTES)))
+                    //.startAt(Date.from(Instant.now().plus(3, ChronoUnit.MINUTES)))
+                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 3/3 ? * * *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("* 0/10 * ? * * *"))
                     .build();
 
 

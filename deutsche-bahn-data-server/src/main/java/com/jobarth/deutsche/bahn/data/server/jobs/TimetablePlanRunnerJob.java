@@ -18,7 +18,7 @@ public class TimetablePlanRunnerJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         TimetableRequest timetableRequest = (TimetableRequest) context.getMergedJobDataMap().get("request");
         Queue<LocalDateTime> requestTimes = Queues.newArrayDeque();
-        int MAX_DATE_TIMES = 2;
+        int MAX_DATE_TIMES = 24;
 
         for (int i = 0; i < MAX_DATE_TIMES; i++) {
             requestTimes.add(LocalDateTime.now().plusHours(i));

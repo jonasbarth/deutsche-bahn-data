@@ -31,6 +31,12 @@ class TimetableTest {
     }
 
     @Test
+    public void testThatUpdateTimetable() {
+        //TimetableStop stop1 = new TimetableStop(ID_1, new Arrival())
+    }
+
+
+    @Test
     public void testThatExceptionThrownForTimetabelsWithDifferentStations() {
         Timetable timetable1 = new Timetable(Lists.newArrayList(), BERLIN_HBF);
         Timetable timetable2 = new Timetable(Lists.newArrayList(), "Aachen Hbf");
