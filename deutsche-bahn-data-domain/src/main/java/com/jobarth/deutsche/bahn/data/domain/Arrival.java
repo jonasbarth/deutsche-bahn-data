@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @XmlRootElement(name = "ar")
 public class Arrival {
@@ -35,12 +36,21 @@ public class Arrival {
     }
 
     public Arrival(Arrival arrival) {
-        this.changedTime = arrival.getChangedTime();
-        this.changedPlatform = arrival.getChangedPlatform();
-        this.plannedTime = arrival.getPlannedTime();
-        this.plannedPlatform = arrival.getPlannedPlatform();
-        this.plannedPath = arrival.getPlannedPath();
-        this.changedPath = arrival.getChangedPath();
+        if (arrival == null) {
+            this.changedTime = "";
+            this.changedPlatform = "";
+            this.plannedTime = "";
+            this.plannedPlatform = "";
+            this.plannedPath = "";
+            this.changedPath = "";
+        } else {
+            this.changedTime = arrival.getChangedTime();
+            this.changedPlatform = arrival.getChangedPlatform();
+            this.plannedTime = arrival.getPlannedTime();
+            this.plannedPlatform = arrival.getPlannedPlatform();
+            this.plannedPath = arrival.getPlannedPath();
+            this.changedPath = arrival.getChangedPath();
+        }
     }
 
     public void setChangedPath(String changedPath) {
@@ -123,5 +133,13 @@ public class Arrival {
 
     public LocalDateTime getPlannedTimeAsLocalDateTime() {
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Arrival arrival = (Arrival) o;
+        return Objects.equals(changedTime, arrival.changedTime) && Objects.equals(changedPlatform, arrival.changedPlatform) && Objects.equals(plannedTime, arrival.plannedTime) && Objects.equals(plannedPlatform, arrival.plannedPlatform) && Objects.equals(plannedPath, arrival.plannedPath) && Objects.equals(changedPath, arrival.changedPath);
     }
 }

@@ -41,7 +41,7 @@ public class Timetable {
     }
 
     @XmlElement(name = "s")
-    public List<TimetableStop> getTimetableStops() {
+    public synchronized List<TimetableStop> getTimetableStops() {
         return timetableStops;
     }
 

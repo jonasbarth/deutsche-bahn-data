@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Objects;
 
 @XmlRootElement(name = "tl")
 public class TripLabel {
@@ -26,11 +27,19 @@ public class TripLabel {
     }
 
     public TripLabel(TripLabel tripLabel) {
-        this.filterFlag = tripLabel.getFilterFlag();
-        this.tripType = tripLabel.getTripType();
-        this.owner = tripLabel.getOwner();
-        this.tripCategory = tripLabel.getTripCategory();
-        this.trainNumber = tripLabel.getTrainNumber();
+        if (tripLabel == null) {
+            this.filterFlag = "";
+            this.tripType = "";
+            this.owner = "";
+            this.tripCategory = "";
+            this.trainNumber = "";
+        } else {
+            this.filterFlag = tripLabel.getFilterFlag();
+            this.tripType = tripLabel.getTripType();
+            this.owner = tripLabel.getOwner();
+            this.tripCategory = tripLabel.getTripCategory();
+            this.trainNumber = tripLabel.getTrainNumber();
+        }
     }
 
     public TripLabel() {
@@ -96,5 +105,13 @@ public class TripLabel {
         this.setTripCategory(tripLabel.getTripCategory());
         this.setTrainNumber(tripLabel.getTrainNumber());
         this.setTripType(tripLabel.getTripType());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TripLabel tripLabel = (TripLabel) o;
+        return Objects.equals(filterFlag, tripLabel.filterFlag) && Objects.equals(tripType, tripLabel.tripType) && Objects.equals(owner, tripLabel.owner) && Objects.equals(tripCategory, tripLabel.tripCategory) && Objects.equals(trainNumber, tripLabel.trainNumber);
     }
 }

@@ -8,7 +8,9 @@ import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -39,6 +41,7 @@ public class FileTimetableWriter implements TimetableWriter {
         String nextStop = "";
         String finalStop = "";
 
+        StringBuilder stringBuilder = new StringBuilder();
         Collection<String> rows = Lists.newArrayListWithCapacity(timetable.getTimetableStops().size());
         String headerRow = String.join(",", new String[]{"STATION", "EVA_NO", "STOP_ID",
                 "PLANNED_ARRIVAL", "ACTUAL_ARRIVAL",
@@ -47,7 +50,7 @@ public class FileTimetableWriter implements TimetableWriter {
                 "PLANNED_DEPARTURE_PLATFORM", "ACTUAL_DEPARTURE_PLATFORM",
                 "TRIP_TYPE", "TRAIN_NUMBER"
         });
-        rows.add(headerRow);
+        stringBuilder.append(headerRow).append("\n");
 
         for (TimetableStop timetableStop: timetable.getTimetableStops()) {
             stopId = timetableStop.getId();
@@ -76,11 +79,13 @@ public class FileTimetableWriter implements TimetableWriter {
                     plannedArrivalPlatform, actualArrivalPlatform,
                     plannedDeparturePlatform, actualDeparturePlatform});
             rows.add(row);
+            stringBuilder.append(row).append("\n");
 
         }
-        File csvOutputFile = new File("output.csv");
-        try (PrintWriter pw = new PrintWriter(csvOutputFile)) {
-            rows.forEach(pw::println);
+        String dateTime = LocalDateTime.now().toString().replace(":", "-").replace(".", "-");
+        File csvOutputFile = new File("output" + dateTime + ".csv");
+        try (PrintWriter pw = new PrintWriter(new FileOutputStream(csvOutputFile))) {
+            pw.println(stringBuilder.toString());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

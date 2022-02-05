@@ -7,6 +7,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 
 @XmlRootElement(name = "dp")
 public class Departure {
@@ -31,12 +32,21 @@ public class Departure {
     }
 
     public Departure(Departure departure) {
-        this.changedTime = departure.getChangedTime();
-        this.changedPlatform = departure.getChangedPlatform();
-        this.plannedTime = departure.getPlannedTime();
-        this.plannedPlatform = departure.getPlannedPlatform();
-        this.plannedPath = departure.getPlannedPath();
-        this.changedPath = departure.getChangedPath();
+        if (departure == null) {
+            this.changedTime = null;
+            this.changedPlatform = "";
+            this.plannedTime = null;
+            this.plannedPlatform = "";
+            this.plannedPath = "";
+            this.changedPath = "";
+        } else {
+            this.changedTime = departure.getChangedTime();
+            this.changedPlatform = departure.getChangedPlatform();
+            this.plannedTime = departure.getPlannedTime();
+            this.plannedPlatform = departure.getPlannedPlatform();
+            this.plannedPath = departure.getPlannedPath();
+            this.changedPath = departure.getChangedPath();
+        }
     }
 
     public Departure() {
@@ -116,12 +126,26 @@ public class Departure {
     }
 
     public LocalDateTime getChangedTimeAsLocalDateTime() {
+        if (getChangedTime() == null && getPlannedTime() == null) {
+            return null;
+        }
         if (getChangedTime() != null)
             return LocalDateTime.parse(getChangedTime(), DATE_TIME_FORMATTER);
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getPlannedTimeAsLocalDateTime() {
+        if (getPlannedTime() == null) {
+            return null;
+        }
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Departure departure = (Departure) o;
+        return Objects.equals(changedTime, departure.changedTime) && Objects.equals(changedPlatform, departure.changedPlatform) && Objects.equals(plannedTime, departure.plannedTime) && Objects.equals(plannedPlatform, departure.plannedPlatform) && Objects.equals(plannedPath, departure.plannedPath) && Objects.equals(changedPath, departure.changedPath);
     }
 }

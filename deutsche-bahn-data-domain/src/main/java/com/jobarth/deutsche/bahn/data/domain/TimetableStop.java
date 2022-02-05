@@ -77,11 +77,26 @@ public class TimetableStop {
             throw new IllegalArgumentException(String.format("The timetable stops must have the same ID. ID of timetable stop to be updated: %s =/= %s ID of provided timetable stop.", this.id, timetableStop.getId()));
         }
         LOGGER.info("Updating the timetable stop with ID {}.", this.id);
-        this.arrival.update(timetableStop.getArrival());
-
+        if (this.arrival != null)
+            this.arrival.update(timetableStop.getArrival());
+        else
+            this.arrival = timetableStop.getArrival();
         /* If this stop is the end station, there will be no departure, hence we must check if it is null */
         if (this.departure != null)
             this.departure.update(timetableStop.getDeparture());
+        else
+            this.departure = timetableStop.getDeparture();
         this.tripLabel.update(timetableStop.getTripLabel());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TimetableStop that = (TimetableStop) o;
+        return Objects.equals(id, that.id)
+                && Objects.equals(arrival, that.arrival)
+                && Objects.equals(departure, that.departure)
+                && Objects.equals(tripLabel, that.tripLabel);
     }
 }
