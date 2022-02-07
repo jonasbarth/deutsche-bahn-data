@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.TriggerBuilder.newTrigger;
@@ -33,9 +32,11 @@ public class QuartzTimetableService implements TimetableService {
     private static final String WRITER_TRIGGER = "writer-trigger";
     private List<JobKey> allJobKeys;
 
-    public QuartzTimetableService(String evaNo) {
-        Objects.requireNonNull(evaNo, "The evaNo must not be null.");
+    private final TimetableManagerImpl timetableManager;
+
+    public QuartzTimetableService(String evaNo, TimetableManagerImpl timetableManager) {
         this.evaNo = evaNo;
+        this.timetableManager = timetableManager;
     }
 
     public void setEvaNo(String evaNo) {
@@ -44,14 +45,12 @@ public class QuartzTimetableService implements TimetableService {
 
     @Override
     public void start() {
-        TimetableManagerImpl listener = new TimetableManagerImpl();
-
         this.allJobKeys = Lists.newArrayListWithCapacity(3);
         Scheduler scheduler = null;
         try {
             scheduler = StdSchedulerFactory.getDefaultScheduler();
 
-            TimetableRequest timetableRequest = new TimetableRequestImpl(this.evaNo, listener);
+            TimetableRequest timetableRequest = new TimetableRequestImpl(this.evaNo, timetableManager);
 
             JobDataMap jobData = new JobDataMap(ImmutableMap.of(
                     "request", timetableRequest));
@@ -89,7 +88,7 @@ public class QuartzTimetableService implements TimetableService {
 
             JobDataMap timetableWriterJobData = new JobDataMap(ImmutableMap.of(
                         "evaNo", evaNo,
-                    "timetable", listener));
+                    "timetable", timetableManager));
 
             JobDetail timetableWriterJob = newJob(TimetableWriterJob.class)
                     .withIdentity(WRITER_JOB, evaNo)
@@ -100,7 +99,8 @@ public class QuartzTimetableService implements TimetableService {
 
             Trigger timetableWriterTrigger = newTrigger()
                     .withIdentity(WRITER_TRIGGER, evaNo)
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 1/3 ? * * *"))
+                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 3/10 * ? * * *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 19/3 ? * * *"))
                     .build();
 
             scheduler.scheduleJob(planJob, planRunnerTrigger);

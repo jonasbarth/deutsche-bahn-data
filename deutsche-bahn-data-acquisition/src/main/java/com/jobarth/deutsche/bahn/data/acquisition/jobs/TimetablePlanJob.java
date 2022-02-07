@@ -8,8 +8,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import javax.xml.bind.JAXBException;
-import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.Queue;
 
@@ -32,12 +30,8 @@ public class TimetablePlanJob implements Job {
             } else {
                 timetableRequest.getPlan(dateTimes.remove());
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } catch (JAXBException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            LOGGER.warn("There was a problem with fetching plan or future data for {}.", timetableRequest.getEvaNo(), e);
         }
     }
 }

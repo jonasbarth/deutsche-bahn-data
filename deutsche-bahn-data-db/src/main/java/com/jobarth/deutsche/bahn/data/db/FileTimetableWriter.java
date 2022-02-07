@@ -44,11 +44,11 @@ public class FileTimetableWriter implements TimetableWriter {
         StringBuilder stringBuilder = new StringBuilder();
         Collection<String> rows = Lists.newArrayListWithCapacity(timetable.getTimetableStops().size());
         String headerRow = String.join(",", new String[]{"STATION", "EVA_NO", "STOP_ID",
+                "TRIP_TYPE", "TRAIN_NUMBER",
                 "PLANNED_ARRIVAL", "ACTUAL_ARRIVAL",
                 "PLANNED_DEPARTURE", "ACTUAL_DEPARTURE",
                 "PLANNED_ARRIVAL_PLATFORM", "ACTUAL_ARRIVAL_PLATFORM",
-                "PLANNED_DEPARTURE_PLATFORM", "ACTUAL_DEPARTURE_PLATFORM",
-                "TRIP_TYPE", "TRAIN_NUMBER"
+                "PLANNED_DEPARTURE_PLATFORM", "ACTUAL_DEPARTURE_PLATFORM"
         });
         stringBuilder.append(headerRow).append("\n");
 
