@@ -12,9 +12,17 @@ repositories {
     mavenCentral()
 }
 
+configurations {
+    all {
+        exclude module: 'logback-classic'
+        exclude module: 'spring-boot-starter-logging'
+    }
+}
+
 dependencies {
     implementation project(':deutsche-bahn-data-domain')
-    //implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
+    implementation 'org.springframework.boot:spring-boot-starter-data-neo4j'
+    implementation 'io.projectreactor:reactor-core:3.4.14'
     implementation 'com.google.guava:guava:31.0.1-jre'
     implementation 'org.codehaus.groovy:groovy-all:2.3.11'
     implementation 'org.slf4j:slf4j-api:1.7.35'
