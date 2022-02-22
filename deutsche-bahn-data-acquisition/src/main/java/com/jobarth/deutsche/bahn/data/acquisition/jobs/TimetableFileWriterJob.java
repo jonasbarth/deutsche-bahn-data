@@ -11,7 +11,7 @@ import org.quartz.JobExecutionException;
 /**
  * An implementation of {@link Job} that writes a timetable to a file.
  */
-public class TimetableWriterJob implements Job {
+public class TimetableFileWriterJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

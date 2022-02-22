@@ -18,7 +18,7 @@ public interface TimetableService {
     /**
      * @return the eva number of the station. Will not return {@code null}.
      */
-    public String getEvaNo();
+    public String getEva();
 
 
 }

@@ -16,7 +16,6 @@ import java.util.Set;
  * Implementation of {@link TimetableManager}.
  */
 @Component
-@Scope("singleton")
 public class TimetableManagerImpl implements TimetableRequestListener, TimetableManager {
 
     private final static Logger LOGGER = LoggerFactory.getLogger(TimetablePlanJob.class);

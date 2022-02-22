@@ -37,9 +37,9 @@ public class Arrival {
 
     public Arrival(Arrival arrival) {
         if (arrival == null) {
-            this.changedTime = "";
+            this.changedTime = null;
             this.changedPlatform = "";
-            this.plannedTime = "";
+            this.plannedTime = null;
             this.plannedPlatform = "";
             this.plannedPath = "";
             this.changedPath = "";
@@ -126,12 +126,18 @@ public class Arrival {
     }
 
     public LocalDateTime getChangedTimeAsLocalDateTime() {
+        if (getChangedTime() == null && getPlannedTime() == null) {
+            return null;
+        }
         if (getChangedTime() != null)
             return LocalDateTime.parse(getChangedTime(), DATE_TIME_FORMATTER);
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getPlannedTimeAsLocalDateTime() {
+        if (getPlannedTime() == null) {
+            return null;
+        }
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
     }
 
