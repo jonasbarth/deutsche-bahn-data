@@ -1,4 +1,4 @@
-package com.jobarth.deutsche.bahn.data.db;
+package com.jobarth.deutsche.bahn.data.db.api;
 
 import com.google.common.collect.Lists;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;

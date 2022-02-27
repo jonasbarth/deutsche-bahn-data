@@ -1,7 +1,7 @@
 package com.jobarth.deutsche.bahn.data.acquisition.jobs;
 
-import com.jobarth.deutsche.bahn.data.db.FileTimetableWriter;
-import com.jobarth.deutsche.bahn.data.db.TimetableWriter;
+import com.jobarth.deutsche.bahn.data.db.api.FileTimetableWriter;
+import com.jobarth.deutsche.bahn.data.db.api.TimetableWriter;
 import com.jobarth.deutsche.bahn.data.acquisition.TimetableManagerImpl;
 import com.jobarth.deutsche.bahn.data.acquisition.filter.DepartedTimetableFilter;
 import org.quartz.Job;

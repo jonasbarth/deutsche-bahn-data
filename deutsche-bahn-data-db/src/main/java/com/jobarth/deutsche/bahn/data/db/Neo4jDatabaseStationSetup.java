@@ -1,5 +1,7 @@
-package com.jobarth.deutsche.bahn.data.db.domain;
+package com.jobarth.deutsche.bahn.data.db;
 
+import com.jobarth.deutsche.bahn.data.db.domain.StationEntity;
+import com.jobarth.deutsche.bahn.data.db.domain.TripCategoryLabel;
 import com.jobarth.deutsche.bahn.data.db.repository.StationRepository;
 import com.jobarth.deutsche.bahn.data.db.repository.TimetableStopRepository;
 import com.jobarth.deutsche.bahn.data.db.repository.TripCategoryRepository;
@@ -20,7 +22,7 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 @ComponentScan("com.jobarth.deutsche.bahn.data.db")
 public class Neo4jDatabaseStationSetup {
-
+    /*
     public static void main(String[] args) {
         SpringApplication.run(Neo4jDatabaseStationSetup.class, args);
     }
@@ -126,5 +128,5 @@ public class Neo4jDatabaseStationSetup {
                     ", latitude=" + latitude +
                     '}';
         }
-    }
+    } */
 }

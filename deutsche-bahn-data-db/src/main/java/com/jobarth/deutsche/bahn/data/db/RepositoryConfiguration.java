@@ -1,5 +1,7 @@
 package com.jobarth.deutsche.bahn.data.db;
 
+import com.jobarth.deutsche.bahn.data.db.api.Neo4jTimetableWriter;
+import com.jobarth.deutsche.bahn.data.db.api.TimetableWriter;
 import com.jobarth.deutsche.bahn.data.db.repository.StationRepository;
 import com.jobarth.deutsche.bahn.data.db.repository.TimetableStopRepository;
 import com.jobarth.deutsche.bahn.data.db.repository.TripCategoryRepository;

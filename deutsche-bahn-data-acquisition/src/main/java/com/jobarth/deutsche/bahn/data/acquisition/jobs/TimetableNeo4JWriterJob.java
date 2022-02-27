@@ -2,7 +2,7 @@ package com.jobarth.deutsche.bahn.data.acquisition.jobs;
 
 import com.jobarth.deutsche.bahn.data.acquisition.TimetableManagerImpl;
 import com.jobarth.deutsche.bahn.data.acquisition.filter.DepartedTimetableFilter;
-import com.jobarth.deutsche.bahn.data.db.Neo4jTimetableWriter;
+import com.jobarth.deutsche.bahn.data.db.api.Neo4jTimetableWriter;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;

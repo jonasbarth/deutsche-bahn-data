@@ -1,5 +1,6 @@
-package com.jobarth.deutsche.bahn.data.db;
+package com.jobarth.deutsche.bahn.data.db.api;
 
+import com.google.common.collect.Lists;
 import com.jobarth.deutsche.bahn.data.db.domain.StationEntity;
 import com.jobarth.deutsche.bahn.data.db.domain.TimetableStopEntity;
 import com.jobarth.deutsche.bahn.data.db.domain.TripCategoryLabel;
@@ -13,6 +14,8 @@ import com.jobarth.deutsche.bahn.data.domain.TimetableStop;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.Collection;
 
 @Service
 public class Neo4jTimetableWriter implements TimetableWriter {
@@ -34,6 +37,7 @@ public class Neo4jTimetableWriter implements TimetableWriter {
         LOGGER.info("Writing timetable for {} into neo4j database", timetable.getStation());
         StationEntity station = stationRepository.findByEva(timetable.getEvaNo());
 
+        Collection<TimetableStopEntity> stopsToSave = Lists.newArrayList();
         for (TimetableStop stop : timetable.getTimetableStops()) {
             StationEntity nextStation = stationRepository.findByName(stop.getNextStop());
             StationEntity previousStation = stationRepository.findByName(stop.getPreviousStop());
@@ -48,7 +52,9 @@ public class Neo4jTimetableWriter implements TimetableWriter {
                     arrival.getPlannedTimeAsLocalDateTime(), arrival.getChangedTimeAsLocalDateTime(),
                     departure.getPlannedTimeAsLocalDateTime(), departure.getChangedTimeAsLocalDateTime(),
                     arrival.getPlannedPlatform(), departure.getChangedPlatform());
-            timetableStopRepository.save(timetableStop);
+            stopsToSave.add(timetableStop);
         }
+        LOGGER.info("Saving {} stops to the database.", stopsToSave.size());
+        timetableStopRepository.saveAll(stopsToSave);
     }
 }
