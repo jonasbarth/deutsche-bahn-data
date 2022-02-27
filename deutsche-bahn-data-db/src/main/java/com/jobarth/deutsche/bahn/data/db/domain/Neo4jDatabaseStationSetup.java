@@ -1,6 +1,7 @@
 package com.jobarth.deutsche.bahn.data.db.domain;
 
 import com.jobarth.deutsche.bahn.data.db.repository.StationRepository;
+import com.jobarth.deutsche.bahn.data.db.repository.TimetableStopRepository;
 import com.jobarth.deutsche.bahn.data.db.repository.TripCategoryRepository;
 import com.opencsv.bean.CsvBindByName;
 import com.opencsv.bean.CsvToBeanBuilder;
@@ -50,6 +51,13 @@ public class Neo4jDatabaseStationSetup {
                     .collect(Collectors.toList());
 
             tripCategoryRepository.saveAll(tripCategoryLabels);
+        };
+    }
+
+    @Bean
+    CommandLineRunner timetableStopRunner(TimetableStopRepository timetableStopRepository) {
+        return args -> {
+            timetableStopRepository.deleteAll();
         };
     }
 

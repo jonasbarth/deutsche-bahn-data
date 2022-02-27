@@ -10,10 +10,14 @@ import com.jobarth.deutsche.bahn.data.domain.Arrival;
 import com.jobarth.deutsche.bahn.data.domain.Departure;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
 import com.jobarth.deutsche.bahn.data.domain.TimetableStop;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 @Service
 public class Neo4jTimetableWriter implements TimetableWriter {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(Neo4jTimetableWriter.class);
 
     private StationRepository stationRepository;
     private TripCategoryRepository tripCategoryRepository;
@@ -27,13 +31,19 @@ public class Neo4jTimetableWriter implements TimetableWriter {
 
     @Override
     public void write(Timetable timetable) {
+        LOGGER.info("Writing timetable for {} into neo4j database", timetable.getStation());
         StationEntity station = stationRepository.findByEva(timetable.getEvaNo());
 
         for (TimetableStop stop : timetable.getTimetableStops()) {
+            StationEntity nextStation = stationRepository.findByName(stop.getNextStop());
+            StationEntity previousStation = stationRepository.findByName(stop.getPreviousStop());
+            LOGGER.info("Previous stop: {}", stop.getPreviousStop());
+            LOGGER.info("Next stop: {}", stop.getNextStop());
             TripCategoryLabel tripCategoryLabel = tripCategoryRepository.findByTripCategory(stop.getTripLabel().getTripCategory());
             Arrival arrival = stop.getArrival();
             Departure departure = stop.getDeparture();
-            TimetableStopEntity timetableStop = new TimetableStopEntity(stop.getId(), tripCategoryLabel, station,
+            TimetableStopEntity timetableStop = new TimetableStopEntity(stop.getId(), tripCategoryLabel,
+                    station, nextStation, previousStation,
                     stop.getTripLabel().getTrainNumber(),
                     arrival.getPlannedTimeAsLocalDateTime(), arrival.getChangedTimeAsLocalDateTime(),
                     departure.getPlannedTimeAsLocalDateTime(), departure.getChangedTimeAsLocalDateTime(),

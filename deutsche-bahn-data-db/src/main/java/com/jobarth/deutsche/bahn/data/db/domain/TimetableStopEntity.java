@@ -22,6 +22,12 @@ public class TimetableStopEntity {
     @Relationship("AT_STATION")
     private final StationEntity station;
 
+    @Relationship("NEXT_STATION")
+    private final StationEntity nextStation;
+
+    @Relationship("PREVIOUS_STATION")
+    private final StationEntity previousStation;
+
     @Property
     private final String trainNumber;
 
@@ -43,10 +49,12 @@ public class TimetableStopEntity {
     @Property
     private final String actualPlatform;
 
-    public TimetableStopEntity(String id, TripCategoryLabel tripCategory, StationEntity station, String trainNumber, LocalDateTime plannedArrival, LocalDateTime actualArrival, LocalDateTime plannedDeparture, LocalDateTime actualDeparture, String plannedPlatform, String actualPlatform) {
+    public TimetableStopEntity(String id, TripCategoryLabel tripCategory, StationEntity station, StationEntity nextStation, StationEntity previousStation, String trainNumber, LocalDateTime plannedArrival, LocalDateTime actualArrival, LocalDateTime plannedDeparture, LocalDateTime actualDeparture, String plannedPlatform, String actualPlatform) {
         this.id = id;
         this.tripCategory = tripCategory;
         this.station = station;
+        this.nextStation = nextStation;
+        this.previousStation = previousStation;
         this.trainNumber = trainNumber;
         this.plannedArrival = plannedArrival;
         this.actualArrival = actualArrival;

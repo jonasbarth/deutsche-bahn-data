@@ -31,7 +31,6 @@ public class QuartzTimetableService implements TimetableService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(QuartzTimetableService.class);
 
-    private String eva;
     private static final String PLAN_RUNNER_JOB = "plan-runner-job";
     private static final String PLAN_RUNNER_TRIGGER = "plan-runner-trigger";
     private static final String RECENT_CHANGES_JOB = "recent-changes-job";
@@ -39,6 +38,8 @@ public class QuartzTimetableService implements TimetableService {
     private static final String WRITER_JOB = "writer-job";
     private static final String WRITER_TRIGGER = "writer-trigger";
     private List<JobKey> allJobKeys;
+    private String eva;
+    private int recentChangesStartAt;
 
     @Autowired
     private TimetableManagerImpl timetableManager;
@@ -77,7 +78,8 @@ public class QuartzTimetableService implements TimetableService {
             Trigger neo4jTrigger = newTrigger()
                     .withIdentity("neo4jTrigger", eva)
                     .startNow()
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 3/3 ? * * *"))
+                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 3/3 ? * * *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 10/10 * ? * * *"))
                     .build();
 
             TimetableRequest timetableRequest = new TimetableRequestImpl(this.eva, timetableManager);
@@ -112,7 +114,7 @@ public class QuartzTimetableService implements TimetableService {
             Trigger recentChangesJobTrigger = newTrigger()
                     .withIdentity(RECENT_CHANGES_TRIGGER, eva)
                     .startNow()
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0/30 * * ? * * *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule(recentChangesStartAt + "/30 * * ? * * *"))
                     .build();
 
 
@@ -130,12 +132,12 @@ public class QuartzTimetableService implements TimetableService {
             Trigger timetableWriterTrigger = newTrigger()
                     .withIdentity(WRITER_TRIGGER, eva)
                     //.withSchedule(CronScheduleBuilder.cronSchedule("0 3/10 * ? * * *"))
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 19/3 ? * * *"))
+                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 19/3 ? * * *"))
                     .build();
 
             scheduler.scheduleJob(planJob, planRunnerTrigger);
             scheduler.scheduleJob(recentChangesJob, recentChangesJobTrigger);
-            scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
+            //scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
             scheduler.scheduleJob(neo4jJob, neo4jTrigger);
         } catch (SchedulerException e) {
             LOGGER.warn("There was a problem with starting the QuartzTimetableService", e);
@@ -172,5 +174,13 @@ public class QuartzTimetableService implements TimetableService {
 
     public void setSchedulerFactoryBean(SchedulerFactoryBean schedulerFactoryBean) {
         this.schedulerFactoryBean = schedulerFactoryBean;
+    }
+
+    public int getRecentChangesStartAt() {
+        return recentChangesStartAt;
+    }
+
+    public void setRecentChangesStartAt(int recentChangesStartAt) {
+        this.recentChangesStartAt = recentChangesStartAt;
     }
 }

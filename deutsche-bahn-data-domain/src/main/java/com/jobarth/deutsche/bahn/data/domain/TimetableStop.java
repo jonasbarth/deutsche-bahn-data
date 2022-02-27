@@ -89,6 +89,32 @@ public class TimetableStop {
         this.tripLabel.update(timetableStop.getTripLabel());
     }
 
+    public String getPreviousStop() {
+        LOGGER.info("Previous stops: {}", arrival.getPlannedPath());
+        if (arrival.getPlannedPath().equals("")) {
+            return null;
+        }
+        if (departure.getChangedPath() == null) {
+            String[] allPreviousStops = arrival.getPlannedPath().split("\\|");
+            return allPreviousStops[allPreviousStops.length - 1];
+        }
+        String path = arrival.getChangedPath().equals("") ? arrival.getPlannedPath() : arrival.getChangedPath();
+        String[] allPreviousStops = path.split("\\|");
+        return allPreviousStops[allPreviousStops.length - 1];
+    }
+
+    public String getNextStop() {
+        LOGGER.info("Next stops: {}", departure.getPlannedPath());
+        if (departure.getPlannedPath() == null || departure.getPlannedPath().equals("")) {
+            return null;
+        }
+        if (departure.getChangedPath() == null) {
+            return departure.getPlannedPath().split("\\|")[0];
+        }
+        String path = departure.getChangedPath().equals("") ? departure.getPlannedPath() : departure.getChangedPath();
+        return path.split("\\|")[0];
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

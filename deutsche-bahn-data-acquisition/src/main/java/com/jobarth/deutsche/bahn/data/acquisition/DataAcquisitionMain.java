@@ -16,6 +16,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.util.Collection;
+import java.util.List;
 
 @SpringBootApplication
 @EnableConfigurationProperties(ApplicationProperties.class)
@@ -27,7 +28,7 @@ public class DataAcquisitionMain {
     }
 
     @Bean
-    CommandLineRunner run(Collection<String> evas) {
+    CommandLineRunner run(List<String> evas) {
         return args -> {
             Collection<TimetableService> services = Lists.newArrayList();
             for (String evaNo : evas) {
@@ -39,13 +40,14 @@ public class DataAcquisitionMain {
                 mpv.add("eva", evaNo);
                 mpv.add("timetableManager", ApplicationContextProvider.getApplicationContext().getBean(TimetableManagerImpl.class));
                 mpv.add("neo4jJob", ApplicationContextProvider.getApplicationContext().getBean(TimetableNeo4JWriterJob.class));
+                mpv.add("recentChangesStartAt", evas.indexOf(evaNo));
                 //mpv.add("schedulerFactoryBean", ApplicationContextProvider.getApplicationContext().getBean(SchedulerFactoryBean.class));
                 gbd.setPropertyValues(mpv);
                 beanFactory.registerBeanDefinition(evaNo, gbd);
 
                 services.add(beanFactory.getBean(evaNo, QuartzTimetableService.class));
             }
-            services.stream().forEach(TimetableService::start);
+            services.forEach(TimetableService::start);
 
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); //ApplicationContextProvider.getApplicationContext().getBean(SchedulerFactoryBean.class).getScheduler();
             scheduler.start();

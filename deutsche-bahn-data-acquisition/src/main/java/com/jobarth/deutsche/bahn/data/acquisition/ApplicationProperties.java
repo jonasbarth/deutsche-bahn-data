@@ -38,10 +38,10 @@ public class ApplicationProperties {
     }
 
     @Bean
-    public Collection<String> evas() {
+    public List<String> evas() {
         return Arrays.stream(eva.split(","))
                 .map(eva -> eva.replaceAll("\\s", ""))
-                .collect(Collectors.toSet());
+                .collect(Collectors.toList());
     }
 
     @Bean
