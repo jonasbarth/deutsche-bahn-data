@@ -13,7 +13,7 @@ repositories {
 }
 
 bootRun{
-    mainClass = 'com.jobarth.deutsche.bahn.data.db.DataAcquisitionMain'
+    mainClass = 'com.jobarth.deutsche.bahn.data.db.Neo4jDatabaseStationSetup'
 }
 
 configurations {
