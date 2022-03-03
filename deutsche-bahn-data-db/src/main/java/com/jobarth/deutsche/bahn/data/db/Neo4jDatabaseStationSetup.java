@@ -13,6 +13,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 
+import java.io.File;
 import java.io.FileReader;
 import java.util.Arrays;
 import java.util.Collection;
@@ -32,7 +33,8 @@ public class Neo4jDatabaseStationSetup {
         return args -> {
             stationRepository.deleteAll();
             String fileName = "deutsche-bahn-data-db/src/main/resources/db_all_stations.csv";
-            List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(fileName))
+            File file = new File(getClass().getResource("db_all_stations.csv").getFile());
+            List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(file))
                     .withType(CsvStation.class)
                     .build()
                     .parse();

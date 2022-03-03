@@ -13,15 +13,15 @@ import org.springframework.context.annotation.ComponentScan;
 
 import java.util.Collection;
 
-@SpringBootApplication
-@ComponentScan("com.jobarth.deutsche.bahn.data.db")
+//@SpringBootApplication
+//@ComponentScan("com.jobarth.deutsche.bahn.data.db")
 public class ExtractDataTry {
-
+    /*
     public static void main(String[] args) {
         SpringApplication.run(ExtractDataTry.class);
     }
 
-    @Bean
+    //@Bean
     CommandLineRunner extract(StationRepository stationRepository, TripCategoryRepository tripCategoryRepository, TimetableStopRepository timetableStopRepository) {
         return args -> {
             String berlinEva = "8011160";
@@ -29,5 +29,5 @@ public class ExtractDataTry {
             Collection<TimetableStopEntity> stops = timetableStopRepository.findByStation(berlinEva);
             System.out.println(stops.size());
         };
-    }
+    } */
 }
