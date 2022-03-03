@@ -31,7 +31,7 @@ public class Neo4jDatabaseStationSetup {
     CommandLineRunner stationRunner(StationRepository stationRepository) {
         return args -> {
             stationRepository.deleteAll();
-            String fileName = "db_all_stations.csv";
+            String fileName = "deutsche-bahn-data-db/src/main/resources/db_all_stations.csv";
             List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(fileName))
                     .withType(CsvStation.class)
                     .build()
