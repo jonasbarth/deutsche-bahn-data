@@ -46,3 +46,7 @@ dependencies {
 test {
     useJUnitPlatform()
 }
+
+bootRun {
+    mainClass = 'com.jobarth.deutsche.bahn.data.acquisition.DataAcquisitionMain'
+}

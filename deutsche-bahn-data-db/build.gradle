@@ -12,6 +12,10 @@ repositories {
     mavenCentral()
 }
 
+bootRun{
+    mainClass = 'com.jobarth.deutsche.bahn.data.db.DataAcquisitionMain'
+}
+
 configurations {
     all {
         exclude module: 'logback-classic'

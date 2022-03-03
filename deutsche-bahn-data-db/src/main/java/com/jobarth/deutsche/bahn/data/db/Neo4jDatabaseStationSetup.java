@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 @SpringBootApplication
 @ComponentScan("com.jobarth.deutsche.bahn.data.db")
 public class Neo4jDatabaseStationSetup {
-    /*
+
     public static void main(String[] args) {
         SpringApplication.run(Neo4jDatabaseStationSetup.class, args);
     }
@@ -31,7 +31,7 @@ public class Neo4jDatabaseStationSetup {
     CommandLineRunner stationRunner(StationRepository stationRepository) {
         return args -> {
             stationRepository.deleteAll();
-            String fileName = "C:/Users/Jonas/Desktop/Projects/deutsche-bahn/db_all_stations_real.csv";
+            String fileName = "db_all_stations.csv";
             List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(fileName))
                     .withType(CsvStation.class)
                     .build()
@@ -128,5 +128,5 @@ public class Neo4jDatabaseStationSetup {
                     ", latitude=" + latitude +
                     '}';
         }
-    } */
+    }
 }
