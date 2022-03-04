@@ -23,13 +23,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @SpringBootApplication
-@ComponentScan("com.jobarth.deutsche.bahn.data.db")
 public class Neo4jDatabaseStationSetup {
 
     public static void main(String[] args) {
         SpringApplication.run(Neo4jDatabaseStationSetup.class, args);
     }
-
+    /*
     @Bean
     CommandLineRunner stationRunner(StationRepository stationRepository, ResourceLoader resourceLoader) {
         return args -> {
@@ -131,5 +130,5 @@ public class Neo4jDatabaseStationSetup {
                     ", latitude=" + latitude +
                     '}';
         }
-    }
+    } */
 }
