@@ -12,6 +12,8 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 
 import java.io.File;
 import java.io.FileReader;
@@ -29,12 +31,11 @@ public class Neo4jDatabaseStationSetup {
     }
 
     @Bean
-    CommandLineRunner stationRunner(StationRepository stationRepository) {
+    CommandLineRunner stationRunner(StationRepository stationRepository, ResourceLoader resourceLoader) {
         return args -> {
             stationRepository.deleteAll();
-            String fileName = "deutsche-bahn-data-db/src/main/resources/db_all_stations.csv";
-            File file = new File(fileName);
-            List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(file))
+            Resource resource = resourceLoader.getResource("db_all_stations.csv");
+            List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(resource.getFile()))
                     .withType(CsvStation.class)
                     .build()
                     .parse();
