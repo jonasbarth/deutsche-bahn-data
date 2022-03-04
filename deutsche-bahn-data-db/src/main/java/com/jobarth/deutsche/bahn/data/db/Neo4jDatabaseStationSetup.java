@@ -33,7 +33,7 @@ public class Neo4jDatabaseStationSetup {
         return args -> {
             stationRepository.deleteAll();
             String fileName = "deutsche-bahn-data-db/src/main/resources/db_all_stations.csv";
-            File file = new File(getClass().getResource("db_all_stations.csv").getFile());
+            File file = new File(fileName);
             List<CsvStation> beans = new CsvToBeanBuilder(new FileReader(file))
                     .withType(CsvStation.class)
                     .build()
