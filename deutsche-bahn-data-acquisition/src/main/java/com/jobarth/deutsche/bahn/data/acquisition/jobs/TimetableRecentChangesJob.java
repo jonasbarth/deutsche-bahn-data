@@ -16,8 +16,19 @@ public class TimetableRecentChangesJob implements Job {
     public void execute(JobExecutionContext context) throws JobExecutionException {
         String eva = context.getMergedJobDataMap().getString("eva");
         try {
-            Trigger planJobTrigger = context.getScheduler().getTrigger(TriggerKey.triggerKey("plan trigger", "plan " + eva));
-            if (planJobTrigger == null || !planJobTrigger.mayFireAgain()) {
+            boolean allPlanRequestsDone = context.getScheduler().getJobGroupNames().stream()
+                    .filter(groupName -> groupName.contains("plan"))
+                    .map(groupName -> {
+                        try {
+                            return context.getScheduler().getTrigger(TriggerKey.triggerKey("plan trigger", groupName));
+                        } catch (SchedulerException e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    })
+                    .allMatch(trigger -> trigger == null || !trigger.mayFireAgain());
+
+            if (allPlanRequestsDone) {
                 TimetableRequest timetableRequest = (TimetableRequest) context.getMergedJobDataMap().get("request");
                 timetableRequest.getRecentChanges();
             }

@@ -22,6 +22,8 @@ public class FileTimetableWriter implements TimetableWriter {
 
     @Override
     public void write(Timetable timetable) {
+        //create the file for the station if it doesn't exist already
+
         //create string that can be written to CSV
 
         String station = timetable.getStation();
@@ -50,7 +52,7 @@ public class FileTimetableWriter implements TimetableWriter {
                 "PLANNED_ARRIVAL_PLATFORM", "ACTUAL_ARRIVAL_PLATFORM",
                 "PLANNED_DEPARTURE_PLATFORM", "ACTUAL_DEPARTURE_PLATFORM"
         });
-        stringBuilder.append(headerRow).append("\n");
+        //stringBuilder.append(headerRow).append("\n");
 
         for (TimetableStop timetableStop: timetable.getTimetableStops()) {
             stopId = timetableStop.getId();
@@ -83,11 +85,22 @@ public class FileTimetableWriter implements TimetableWriter {
 
         }
         String dateTime = LocalDateTime.now().toString().replace(":", "-").replace(".", "-");
-        File csvOutputFile = new File("output" + dateTime + ".csv");
-        try (PrintWriter pw = new PrintWriter(new FileOutputStream(csvOutputFile))) {
-            pw.println(stringBuilder.toString());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        //File csvOutputFile = new File("output" + dateTime + ".csv");
+        File csvOutputFile = new File(station + ".csv");
+        if (csvOutputFile.exists()) {
+            try (PrintWriter pw = new PrintWriter(new FileOutputStream(csvOutputFile, true))) {
+                pw.println(stringBuilder.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        } else {
+            try (PrintWriter pw = new PrintWriter(new FileOutputStream(csvOutputFile, false))) {
+                pw.println(headerRow);
+                pw.println(stringBuilder.toString());
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
         }
+
     }
 }

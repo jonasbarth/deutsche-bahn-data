@@ -47,7 +47,14 @@ public class DataAcquisitionMain {
 
                 services.add(beanFactory.getBean(evaNo, QuartzTimetableService.class));
             }
-            services.forEach(TimetableService::start);
+            services.forEach(service -> {
+                try {
+                    Thread.sleep(1000);
+                    service.start();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            });
 
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); //ApplicationContextProvider.getApplicationContext().getBean(SchedulerFactoryBean.class).getScheduler();
             scheduler.start();

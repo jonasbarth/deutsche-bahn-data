@@ -17,6 +17,8 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static org.quartz.JobBuilder.newJob;
@@ -40,6 +42,7 @@ public class QuartzTimetableService implements TimetableService {
     private List<JobKey> allJobKeys;
     private String eva;
     private int recentChangesStartAt;
+    private int numberOfStations;
 
     @Autowired
     private TimetableManagerImpl timetableManager;
@@ -94,9 +97,11 @@ public class QuartzTimetableService implements TimetableService {
 
             allJobKeys.add(JobKey.jobKey(PLAN_RUNNER_JOB, eva));
 
+            LocalDateTime now = LocalDateTime.now();
             Trigger planRunnerTrigger = newTrigger()
                     .withIdentity(PLAN_RUNNER_TRIGGER, eva)
                     .startNow()
+                    //.withSchedule(DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule().startingDailyAt(TimeOfDay.hourMinuteAndSecondOfDay(now.getHour(), now.getMinute() + 1, recentChangesStartAt)))
                     //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0,1 ? * * *"))
                     .build();
 
@@ -110,7 +115,10 @@ public class QuartzTimetableService implements TimetableService {
                     .build();
 
             allJobKeys.add(JobKey.jobKey(RECENT_CHANGES_JOB, eva));
-
+            //how many minutes does it take? number of stations
+            // 60 / (20 / number of stations) * number of stations
+            //int startInSeconds = 60 / (20 / numberOfStations) * 25 * numberOfStations;
+            //the job should not run if any future changes or
             Trigger recentChangesJobTrigger = newTrigger()
                     .withIdentity(RECENT_CHANGES_TRIGGER, eva)
                     .startNow()
@@ -119,7 +127,7 @@ public class QuartzTimetableService implements TimetableService {
 
 
             JobDataMap timetableWriterJobData = new JobDataMap(ImmutableMap.of(
-                        "evaNo", eva,
+                        "eva", eva,
                     "timetable", timetableManager));
 
             JobDetail timetableWriterJob = newJob(TimetableFileWriterJob.class)
@@ -131,14 +139,14 @@ public class QuartzTimetableService implements TimetableService {
 
             Trigger timetableWriterTrigger = newTrigger()
                     .withIdentity(WRITER_TRIGGER, eva)
-                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 3/10 * ? * * *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 3/10 * ? * * *"))
                     //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 19/3 ? * * *"))
                     .build();
 
             scheduler.scheduleJob(planJob, planRunnerTrigger);
             scheduler.scheduleJob(recentChangesJob, recentChangesJobTrigger);
-            //scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
-            scheduler.scheduleJob(neo4jJob, neo4jTrigger);
+            scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
+            //scheduler.scheduleJob(neo4jJob, neo4jTrigger);
         } catch (SchedulerException e) {
             LOGGER.warn("There was a problem with starting the QuartzTimetableService", e);
         }
@@ -182,5 +190,13 @@ public class QuartzTimetableService implements TimetableService {
 
     public void setRecentChangesStartAt(int recentChangesStartAt) {
         this.recentChangesStartAt = recentChangesStartAt;
+    }
+
+    public int getNumberOfStations() {
+        return numberOfStations;
+    }
+
+    public void setNumberOfStations(int numberOfStations) {
+        this.numberOfStations = numberOfStations;
     }
 }
