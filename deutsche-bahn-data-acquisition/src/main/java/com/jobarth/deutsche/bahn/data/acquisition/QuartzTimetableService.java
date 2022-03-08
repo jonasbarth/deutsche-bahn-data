@@ -101,6 +101,7 @@ public class QuartzTimetableService implements TimetableService {
             Trigger planRunnerTrigger = newTrigger()
                     .withIdentity(PLAN_RUNNER_TRIGGER, eva)
                     .startNow()
+                    .withSchedule(DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule().withInterval(24, DateBuilder.IntervalUnit.HOUR))
                     //.withSchedule(DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule().startingDailyAt(TimeOfDay.hourMinuteAndSecondOfDay(now.getHour(), now.getMinute() + 1, recentChangesStartAt)))
                     //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0,1 ? * * *"))
                     .build();
