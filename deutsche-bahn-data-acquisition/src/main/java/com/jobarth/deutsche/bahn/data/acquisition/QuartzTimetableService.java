@@ -97,13 +97,13 @@ public class QuartzTimetableService implements TimetableService {
 
             allJobKeys.add(JobKey.jobKey(PLAN_RUNNER_JOB, eva));
 
-            LocalDateTime now = LocalDateTime.now();
+            LocalDateTime now = LocalDateTime.now().plusMinutes(2);
+            int cronMinutes = now.getMinute();
+            int cronHour = now.getHour();
             Trigger planRunnerTrigger = newTrigger()
                     .withIdentity(PLAN_RUNNER_TRIGGER, eva)
                     .startNow()
-                    .withSchedule(DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule().withInterval(24, DateBuilder.IntervalUnit.HOUR))
-                    //.withSchedule(DailyTimeIntervalScheduleBuilder.dailyTimeIntervalSchedule().startingDailyAt(TimeOfDay.hourMinuteAndSecondOfDay(now.getHour(), now.getMinute() + 1, recentChangesStartAt)))
-                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 0,1 ? * * *"))
+                    .withSchedule(CronScheduleBuilder.cronSchedule(String.format("0 %d %d ? * * *", cronMinutes, cronHour)))
                     .build();
 
             JobDataMap recentChangesJobData = new JobDataMap(ImmutableMap.of(
