@@ -37,9 +37,9 @@ public class Arrival {
 
     public Arrival(Arrival arrival) {
         if (arrival == null) {
-            this.changedTime = null;
+            this.changedTime = "";
             this.changedPlatform = "";
-            this.plannedTime = null;
+            this.plannedTime = "";
             this.plannedPlatform = "";
             this.plannedPath = "";
             this.changedPath = "";
@@ -94,11 +94,17 @@ public class Arrival {
 
     @XmlAttribute(name = "ct")
     public String getChangedTime() {
+        if (this.changedTime == null) {
+            return this.plannedTime;
+        }
         return this.changedTime;
     }
 
     @XmlAttribute(name = "cp")
     public String getChangedPlatform() {
+        if (this.changedPlatform == null) {
+            return this.plannedPlatform;
+        }
         return this.changedPlatform;
     }
 
@@ -126,16 +132,16 @@ public class Arrival {
     }
 
     public LocalDateTime getChangedTimeAsLocalDateTime() {
-        if (getChangedTime() == null && getPlannedTime() == null) {
+        if (getChangedTime().equals("") && getPlannedTime().equals("")) {
             return null;
         }
-        if (getChangedTime() != null)
+        if (!getChangedTime().equals(""))
             return LocalDateTime.parse(getChangedTime(), DATE_TIME_FORMATTER);
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);
     }
 
     public LocalDateTime getPlannedTimeAsLocalDateTime() {
-        if (getPlannedTime() == null) {
+        if (getPlannedTime().equals("")) {
             return null;
         }
         return LocalDateTime.parse(getPlannedTime(), DATE_TIME_FORMATTER);

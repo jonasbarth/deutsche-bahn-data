@@ -6,6 +6,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.time.LocalDateTime;
 import java.util.Objects;
 
 @XmlRootElement(name = "s")
@@ -46,6 +47,9 @@ public class TimetableStop {
 
     @XmlElement(name = "dp")
     public Departure getDeparture() {
+        if (this.departure == null) {
+            return new Departure(null);
+        }
         return departure;
     }
 
@@ -60,6 +64,9 @@ public class TimetableStop {
 
     @XmlElement(name = "ar")
     public Arrival getArrival() {
+        if (this.arrival == null) {
+            return new Arrival(null);
+        }
         return this.arrival;
     }
 
@@ -113,6 +120,26 @@ public class TimetableStop {
         }
         String path = departure.getChangedPath().equals("") ? departure.getPlannedPath() : departure.getChangedPath();
         return path.split("\\|")[0];
+    }
+
+    public boolean hasDepartedAfter(LocalDateTime after) {
+        // if the stop doesn't have a departure
+        if (getDeparture() == null) {
+            return false;
+        }
+        LocalDateTime plannedDeparture = getDeparture().getPlannedTimeAsLocalDateTime();
+        LocalDateTime actualDeparture = getDeparture().getChangedTimeAsLocalDateTime();
+        if (plannedDeparture == null) {
+            return false;
+        }
+        if (actualDeparture != null) {
+            return actualDeparture.isBefore(after) && plannedDeparture.isBefore(after);
+        }
+        return plannedDeparture.isBefore(after);
+    }
+
+    public boolean hasDeparted() {
+        return hasDepartedAfter(LocalDateTime.now());
     }
 
     @Override

@@ -45,6 +45,18 @@ class TimetableTest {
                 .hasMessage("Cannot extend timetable. The given timetable is from Aachen Hbf whereas the one it is supposed to be added to is Berlin Hbf.");
     }
 
+    @Test
+    public void testThatTimetableStopsRemoved() {
+        TimetableStop stop = mockTimetableStop("id");
+        TimetableStop stop2 = mockTimetableStop("id2");
+        TimetableStop stop3 = mockTimetableStop("id3");
+        Timetable timetable = new Timetable(Lists.newArrayList(stop, stop2, stop3), "Berlin Hbf");
+
+        timetable.remove(Lists.newArrayList(stop, stop2));
+
+        assertThat(timetable.getTimetableStops()).containsExactly(stop3);
+    }
+
     private static TimetableStop mockTimetableStop(String id) {
         TimetableStop timetableStop = mock(TimetableStop.class);
         when(timetableStop.getId()).thenReturn(id);
