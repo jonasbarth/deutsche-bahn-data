@@ -1,12 +1,11 @@
 package com.jobarth.deutsche.bahn.data.acquisition;
 
 import com.google.common.collect.Sets;
+import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetablePlanJob;
 import com.jobarth.deutsche.bahn.data.acquisition.request.TimetableRequestListener;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
-import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetablePlanJob;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
@@ -67,7 +66,7 @@ public class TimetableManagerImpl implements TimetableRequestListener, Timetable
     @Override
     public Timetable get(String evaNo) {
         return timetables.stream()
-                .filter(timetable -> timetable.getEvaNo().equals(evaNo))
+                .filter(timetable -> evaNo.equals(timetable.getEvaNo() ))
                 .findFirst()
                 .orElse(null);
     }

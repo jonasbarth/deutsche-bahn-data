@@ -2,6 +2,7 @@ package com.jobarth.deutsche.bahn.data.acquisition;
 
 import com.google.common.collect.Lists;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableNeo4JWriterJob;
+import com.jobarth.deutsche.bahn.data.acquisition.server.TimetableServer;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
 import org.springframework.beans.MutablePropertyValues;
@@ -58,6 +59,13 @@ public class DataAcquisitionMain {
 
             Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler(); //ApplicationContextProvider.getApplicationContext().getBean(SchedulerFactoryBean.class).getScheduler();
             scheduler.start();
+        };
+    }
+    
+    @Bean
+    CommandLineRunner runServer(TimetableServer timetableServer) {
+        return args -> {
+            timetableServer.start();
         };
     }
 }

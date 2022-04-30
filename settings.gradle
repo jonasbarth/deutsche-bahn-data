@@ -2,4 +2,5 @@ rootProject.name = 'deutsche-bahn-data'
 include 'deutsche-bahn-data-domain'
 include 'deutsche-bahn-data-acquisition'
 include 'deutsche-bahn-data-db'
+include 'deutsche-bahn-data-server'
 

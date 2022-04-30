@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -97,6 +98,19 @@ public class Timetable {
                 .collect(Collectors.toSet());
         this.timetableStops.addAll(timetableStopsToAdd);
         LOGGER.info("Extended the time table of station {} with {} timetable stops.", this.station, timetableStopsToAdd.size());
+    }
+
+    public void remove(Collection<TimetableStop> stopsToRemove) {
+        Collection<TimetableStop> foundToRemove = timetableStops.stream()
+                .filter(timetableStop -> containsStop(stopsToRemove, timetableStop))
+                .collect(Collectors.toList());
+
+        timetableStops.removeAll(foundToRemove);
+    }
+
+    private static boolean containsStop(Collection<TimetableStop> stops, TimetableStop stop) {
+        return stops.stream()
+                .anyMatch(timetableStop -> timetableStop.getId().equals(stop.getId()));
     }
 
 
