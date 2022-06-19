@@ -64,6 +64,15 @@ public class TimetableStopTest {
         assertThat(stop.hasDepartedAfter(afterTime)).isEqualTo(expectedResult);
     }
 
+    @Test
+    public void testThatIsOlderThan() {
+        LocalDateTime now = LocalDateTime.now();
+        Departure departure = new Departure(getDatetimeFormat(now.minusHours(24)), null , getDatetimeFormat(now.minusHours(24)), null, null, null);
+        TimetableStop stop = new TimetableStop(null, null, departure, null);
+
+        assertThat(stop.isOlderThan(LocalDateTime.now().minusHours(23))).isTrue();
+    }
+
     private static Stream<Arguments> departureDateTimes() {
         LocalDateTime now = LocalDateTime.now();
 

@@ -140,6 +140,28 @@ public class TimetableStop {
         return plannedDeparture.isAfter(after) && plannedDeparture.isBefore(now);
     }
 
+    /**
+     * Method that checks whether the stop is older than a specific date time.
+     * @param dateTime the {@link LocalDateTime} that this stop is compared against.
+     * @return {@code true} if either the departure or arrival are earlier than the dateTime. {@code false} otherwise.
+     */
+    public boolean isOlderThan(LocalDateTime dateTime) {
+        LocalDateTime plannedTime = LocalDateTime.now();
+        LocalDateTime actualTime = LocalDateTime.now();
+        if (getDeparture() == null) {
+            plannedTime = getArrival().getPlannedTimeAsLocalDateTime();
+            actualTime = getArrival().getChangedTimeAsLocalDateTime();
+        } else {
+            plannedTime = getDeparture().getPlannedTimeAsLocalDateTime();
+            actualTime = getDeparture().getChangedTimeAsLocalDateTime();
+        }
+
+        if (actualTime == null) {
+            return plannedTime.isBefore(dateTime);
+        }
+        return actualTime.isBefore(dateTime);
+    }
+
     public boolean hasDeparted() {
         LocalDateTime now = LocalDateTime.now();
         // if the stop doesn't have a departure

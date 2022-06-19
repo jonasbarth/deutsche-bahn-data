@@ -2,6 +2,7 @@ package com.jobarth.deutsche.bahn.data.acquisition;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
+import com.jobarth.deutsche.bahn.data.acquisition.jobs.DailyTimetableCleanerJob;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetablePlanRunnerJob;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableRecentChangesJob;
 import com.jobarth.deutsche.bahn.data.acquisition.request.TimetableRequest;
@@ -17,6 +18,8 @@ import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import static org.quartz.JobBuilder.newJob;
@@ -35,6 +38,8 @@ public class QuartzTimetableService implements TimetableService {
     private static final String PLAN_RUNNER_TRIGGER = "plan-runner-trigger";
     private static final String RECENT_CHANGES_JOB = "recent-changes-job";
     private static final String RECENT_CHANGES_TRIGGER = "recent-changes-trigger";
+    private static final String DAILY_TIMETABLE_CLEANER_JOB = "daily-timetable-cleaner-job";
+    private static final String DAILY_TIMETABLE_CLEANER_TRIGGER = "daily-timetable-cleaner-trigger";
     private List<JobKey> allJobKeys;
     private String eva;
     private int recentChangesStartAt;
@@ -108,8 +113,24 @@ public class QuartzTimetableService implements TimetableService {
                     .withSchedule(CronScheduleBuilder.cronSchedule(recentChangesStartAt + "/30 * * ? * * *"))
                     .build();
 
+            JobDataMap dailyTimetableCleanerJobData = new JobDataMap(ImmutableMap.of(
+                    "eva", eva,
+                    "timetableManager", timetableManager));
+
+            JobDetail dailyTimetableCleanerJob = newJob(DailyTimetableCleanerJob.class)
+                    .withIdentity(DAILY_TIMETABLE_CLEANER_JOB, eva)
+                    .usingJobData(dailyTimetableCleanerJobData)
+                    .build();
+
+            Trigger dailyTimetableCleanerTrigger = newTrigger()
+                    .withIdentity(DAILY_TIMETABLE_CLEANER_TRIGGER, eva)
+                    .startAt(Date.from(LocalDateTime.now().plusHours(24).atZone(ZoneId.systemDefault()).toInstant()))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 * * * "))
+                    .build();
+
             scheduler.scheduleJob(planJob, planRunnerTrigger);
             scheduler.scheduleJob(recentChangesJob, recentChangesJobTrigger);
+            scheduler.scheduleJob(dailyTimetableCleanerJob, dailyTimetableCleanerTrigger);
         } catch (SchedulerException e) {
             LOGGER.warn("There was a problem with starting the QuartzTimetableService", e);
         }
