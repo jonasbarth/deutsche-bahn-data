@@ -1,10 +1,14 @@
 package com.jobarth.deutsche.bahn.data.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.time.LocalDateTime;
+import java.util.stream.Stream;
+
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -49,6 +53,45 @@ public class TimetableStopTest {
         TimetableStop stop = new TimetableStop(null, null, departure, null);
 
         assertThat(stop.getNextStop()).isNull();
+    }
+
+    @ParameterizedTest
+    @MethodSource("departureDateTimes")
+    public void testThatHasDepartedAfter(String departureTime, LocalDateTime afterTime, boolean expectedResult) {
+        Departure departure = new Departure(departureTime, null , departureTime, null, null, null);
+        TimetableStop stop = new TimetableStop(null, null, departure, null);
+
+        assertThat(stop.hasDepartedAfter(afterTime)).isEqualTo(expectedResult);
+    }
+
+    private static Stream<Arguments> departureDateTimes() {
+        LocalDateTime now = LocalDateTime.now();
+
+        return Stream.of(
+                Arguments.of(getDatetimeFormat(now.minusMinutes(1)), now.plusMinutes(1), false),
+                Arguments.of(getDatetimeFormat(now.minusMinutes(1)), now.minusMinutes(2), true),
+                Arguments.of(getDatetimeFormat(now.minusMinutes(3)), now.minusMinutes(7), true),
+                Arguments.of(getDatetimeFormat(now.minusMinutes(10)), now.minusMinutes(4), false),
+                Arguments.of(getDatetimeFormat(now.plusMinutes(10)), now.plusMinutes(4), false)
+        );
+    }
+
+    private static String getDatetimeFormat(LocalDateTime time) {
+        StringBuilder builder = new StringBuilder();
+        int month = time.getMonth().getValue();
+        int day = time.getDayOfMonth();
+        int hour = time.getHour();
+        int minute = time.getMinute();
+        return builder.append(time.getYear() - 2000)
+                .append(prefixWithZeroIfBelow10(month))
+                .append(prefixWithZeroIfBelow10(day))
+                .append(prefixWithZeroIfBelow10(hour))
+                .append(prefixWithZeroIfBelow10(minute))
+                .toString();
+    }
+
+    private static String prefixWithZeroIfBelow10(int number) {
+        return number < 10 ? "0" + number : String.valueOf(number);
     }
 
     private static Arrival mockArrival(String plannedPath, String changedPath) {

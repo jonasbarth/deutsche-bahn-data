@@ -123,6 +123,7 @@ public class TimetableStop {
     }
 
     public boolean hasDepartedAfter(LocalDateTime after) {
+        LocalDateTime now = LocalDateTime.now();
         // if the stop doesn't have a departure
         if (getDeparture() == null) {
             return false;
@@ -133,13 +134,27 @@ public class TimetableStop {
             return false;
         }
         if (actualDeparture != null) {
-            return actualDeparture.isBefore(after) && plannedDeparture.isBefore(after);
+            return actualDeparture.isAfter(after) && plannedDeparture.isAfter(after)
+                    && actualDeparture.isBefore(now) && plannedDeparture.isBefore(now);
         }
-        return plannedDeparture.isBefore(after);
+        return plannedDeparture.isAfter(after) && plannedDeparture.isBefore(now);
     }
 
     public boolean hasDeparted() {
-        return hasDepartedAfter(LocalDateTime.now());
+        LocalDateTime now = LocalDateTime.now();
+        // if the stop doesn't have a departure
+        if (getDeparture() == null) {
+            return false;
+        }
+        LocalDateTime plannedDeparture = getDeparture().getPlannedTimeAsLocalDateTime();
+        LocalDateTime actualDeparture = getDeparture().getChangedTimeAsLocalDateTime();
+        if (plannedDeparture == null) {
+            return false;
+        }
+        if (actualDeparture != null) {
+            return actualDeparture.isBefore(now) && plannedDeparture.isBefore(now);
+        }
+        return plannedDeparture.isBefore(now);
     }
 
     @Override
