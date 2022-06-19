@@ -1,14 +1,11 @@
 package com.jobarth.deutsche.bahn.data.acquisition;
 
-import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableNeo4JWriterJob;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
