@@ -3,7 +3,6 @@ package com.jobarth.deutsche.bahn.data.acquisition;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableFileWriterJob;
-import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableNeo4JWriterJob;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetablePlanRunnerJob;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableRecentChangesJob;
 import com.jobarth.deutsche.bahn.data.acquisition.request.TimetableRequest;
@@ -13,12 +12,12 @@ import org.quartz.impl.StdSchedulerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import static org.quartz.JobBuilder.newJob;
@@ -44,11 +43,11 @@ public class QuartzTimetableService implements TimetableService {
     private int recentChangesStartAt;
     private int numberOfStations;
 
-    @Autowired
-    private TimetableManagerImpl timetableManager;
+    @Value("${bearer.token}")
+    private String bearerToken;
 
     @Autowired
-    private TimetableNeo4JWriterJob neo4jJob;
+    private TimetableManagerImpl timetableManager;
 
     @Autowired
     private SchedulerFactoryBean schedulerFactoryBean;
@@ -71,21 +70,7 @@ public class QuartzTimetableService implements TimetableService {
             scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.setJobFactory(jobFactory);
 
-            JobDetail neo4jJob = newJob(TimetableNeo4JWriterJob.class)
-                    .withIdentity("neo4j", eva)
-                    .usingJobData(new JobDataMap(ImmutableMap.of(
-                            "eva", eva,
-                            "timetableManager", timetableManager)))
-                    .build();
-
-            Trigger neo4jTrigger = newTrigger()
-                    .withIdentity("neo4jTrigger", eva)
-                    .startNow()
-                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 3/3 ? * * *"))
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 10/10 * ? * * *"))
-                    .build();
-
-            TimetableRequest timetableRequest = new TimetableRequestImpl(this.eva, timetableManager);
+            TimetableRequest timetableRequest = new TimetableRequestImpl(this.eva, timetableManager, bearerToken);
 
             JobDataMap jobData = new JobDataMap(ImmutableMap.of(
                     "request", timetableRequest));
@@ -146,8 +131,7 @@ public class QuartzTimetableService implements TimetableService {
 
             scheduler.scheduleJob(planJob, planRunnerTrigger);
             scheduler.scheduleJob(recentChangesJob, recentChangesJobTrigger);
-            scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
-            //scheduler.scheduleJob(neo4jJob, neo4jTrigger);
+            //scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
         } catch (SchedulerException e) {
             LOGGER.warn("There was a problem with starting the QuartzTimetableService", e);
         }
@@ -175,10 +159,6 @@ public class QuartzTimetableService implements TimetableService {
 
     public void setTimetableManager(TimetableManagerImpl timetableManager) {
         this.timetableManager = timetableManager;
-    }
-
-    public void setNeo4jJob(TimetableNeo4JWriterJob neo4jJob) {
-        this.neo4jJob = neo4jJob;
     }
 
     public void setSchedulerFactoryBean(SchedulerFactoryBean schedulerFactoryBean) {
