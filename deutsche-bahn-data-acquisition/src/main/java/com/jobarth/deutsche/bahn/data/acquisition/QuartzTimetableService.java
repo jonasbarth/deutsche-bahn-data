@@ -2,7 +2,6 @@ package com.jobarth.deutsche.bahn.data.acquisition;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
-import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableFileWriterJob;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetablePlanRunnerJob;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetableRecentChangesJob;
 import com.jobarth.deutsche.bahn.data.acquisition.request.TimetableRequest;
@@ -36,8 +35,6 @@ public class QuartzTimetableService implements TimetableService {
     private static final String PLAN_RUNNER_TRIGGER = "plan-runner-trigger";
     private static final String RECENT_CHANGES_JOB = "recent-changes-job";
     private static final String RECENT_CHANGES_TRIGGER = "recent-changes-trigger";
-    private static final String WRITER_JOB = "writer-job";
-    private static final String WRITER_TRIGGER = "writer-trigger";
     private List<JobKey> allJobKeys;
     private String eva;
     private int recentChangesStartAt;
@@ -111,27 +108,8 @@ public class QuartzTimetableService implements TimetableService {
                     .withSchedule(CronScheduleBuilder.cronSchedule(recentChangesStartAt + "/30 * * ? * * *"))
                     .build();
 
-
-            JobDataMap timetableWriterJobData = new JobDataMap(ImmutableMap.of(
-                        "eva", eva,
-                    "timetable", timetableManager));
-
-            JobDetail timetableWriterJob = newJob(TimetableFileWriterJob.class)
-                    .withIdentity(WRITER_JOB, eva)
-                    .usingJobData(timetableWriterJobData)
-                    .build();
-
-            allJobKeys.add(JobKey.jobKey(WRITER_JOB, eva));
-
-            Trigger timetableWriterTrigger = newTrigger()
-                    .withIdentity(WRITER_TRIGGER, eva)
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 3/10 * ? * * *"))
-                    //.withSchedule(CronScheduleBuilder.cronSchedule("0 0 19/3 ? * * *"))
-                    .build();
-
             scheduler.scheduleJob(planJob, planRunnerTrigger);
             scheduler.scheduleJob(recentChangesJob, recentChangesJobTrigger);
-            //scheduler.scheduleJob(timetableWriterJob, timetableWriterTrigger);
         } catch (SchedulerException e) {
             LOGGER.warn("There was a problem with starting the QuartzTimetableService", e);
         }
