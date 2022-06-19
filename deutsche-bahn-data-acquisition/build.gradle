@@ -40,7 +40,6 @@ configurations {
 
 dependencies {
     implementation project(':deutsche-bahn-data-domain')
-    implementation project(':deutsche-bahn-data-db')
 
     //implementation 'org.quartz-scheduler:quartz:2.3.2'
     implementation 'org.springframework.boot:spring-boot-starter-quartz:2.6.3'
