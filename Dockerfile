@@ -4,6 +4,7 @@ WORKDIR /deutsche-bahn-data/app
 
 COPY . .
 
+RUN ["chmod", "+x", "./gradlew"]
 RUN ./gradlew bootJar
 
 COPY deutsche-bahn-data-acquisition/build/libs/deutsche-bahn-data-acquisition-*.jar app.jar
