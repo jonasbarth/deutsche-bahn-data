@@ -72,7 +72,7 @@ public class QuartzTimetableService implements TimetableService {
             scheduler = StdSchedulerFactory.getDefaultScheduler();
             scheduler.setJobFactory(jobFactory);
 
-            TimetableRequest timetableRequest = new TimetableRequestImpl(this.eva, timetableManager, bearerToken);
+            TimetableRequest timetableRequest = new TimetableRequestImpl(this.eva, timetableManager, System.getProperty("bearer.token"));
 
             JobDataMap jobData = new JobDataMap(ImmutableMap.of(
                     "request", timetableRequest));

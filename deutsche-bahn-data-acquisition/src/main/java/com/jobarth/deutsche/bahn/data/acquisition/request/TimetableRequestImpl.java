@@ -137,7 +137,7 @@ public class TimetableRequestImpl implements TimetableRequest {
         return HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create(uri))
-                .header("Authorization", "Bearer dec0445e9c29bf5bc4e8c1641c6ba1fc")
+                .header("Authorization", "Bearer " + bearerToken)
                 .build();
     }
     
