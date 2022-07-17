@@ -125,7 +125,7 @@ public class QuartzTimetableService implements TimetableService {
             Trigger dailyTimetableCleanerTrigger = newTrigger()
                     .withIdentity(DAILY_TIMETABLE_CLEANER_TRIGGER, eva)
                     .startAt(Date.from(LocalDateTime.now().plusHours(24).atZone(ZoneId.systemDefault()).toInstant()))
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 * * * "))
+                    .withSchedule(CronScheduleBuilder.cronSchedule("0 0 0 ? * * *"))
                     .build();
 
             scheduler.scheduleJob(planJob, planRunnerTrigger);

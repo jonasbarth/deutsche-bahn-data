@@ -29,10 +29,12 @@ public class TimetableRequestImpl implements TimetableRequest {
     private static final String FUTURE_CHANGES_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/fchg/%s";
     private static final String RECENT_CHANGES_REQUEST_URL_FORMAT = "https://api.deutschebahn.com/timetables/v1/rchg/%s";
 
+    private String bearerToken;
 
-    public TimetableRequestImpl(String evaNo, TimetableRequestListener listener) {
+    public TimetableRequestImpl(String evaNo, TimetableRequestListener listener, String bearerToken) {
         this.evaNo = evaNo;
         this.timetableRequestListener = listener;
+        this.bearerToken = bearerToken;
     }
 
 
