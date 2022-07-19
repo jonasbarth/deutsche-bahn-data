@@ -27,11 +27,10 @@ public class TimetableServiceImpl extends TimetableServiceGrpc.TimetableServiceI
     public void getDepartedAfter(Timetable.TimetableRequest request, StreamObserver<Timetable.TimetableResponse> responseObserver) {
         try {
             String eva = request.getEva();
-            String stationName = timetableManager.get(eva).getStation();
             long timestamp = request.getDepartedAfter();
             LOGGER.info("Received request for {} and departed after {}", request.getEva(), timestamp);
 
-
+            String stationName = timetableManager.get(eva).getStation();
             LocalDateTime departedAfter = LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
 
             timetableManager.get(eva).getTimetableStops().stream()
