@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+option java_package = "com.jobarth.deutsche.bahn.data.acquisition.server";
+
+service StationService {
+  rpc getAllStations(StationRequest) returns (stream StationResponse) {}
+}
+
+message StationRequest {}
+
+message StationResponse {
+  string eva = 1;
+  string stationName = 2;
+}

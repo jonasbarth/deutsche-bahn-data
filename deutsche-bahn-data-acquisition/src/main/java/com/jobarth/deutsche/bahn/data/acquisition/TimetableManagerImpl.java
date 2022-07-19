@@ -3,13 +3,16 @@ package com.jobarth.deutsche.bahn.data.acquisition;
 import com.google.common.collect.Sets;
 import com.jobarth.deutsche.bahn.data.acquisition.jobs.TimetablePlanJob;
 import com.jobarth.deutsche.bahn.data.acquisition.request.TimetableRequestListener;
+import com.jobarth.deutsche.bahn.data.domain.Station;
 import com.jobarth.deutsche.bahn.data.domain.Timetable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Implementation of {@link TimetableManager}.
@@ -69,5 +72,12 @@ public class TimetableManagerImpl implements TimetableRequestListener, Timetable
                 .filter(timetable -> evaNo.equals(timetable.getEvaNo() ))
                 .findFirst()
                 .orElse(null);
+    }
+
+    @Override
+    public Collection<Station> getStations() {
+        return timetables.stream()
+                .map(timetable -> new Station(timetable.getStation(), timetable.getEvaNo()))
+                .collect(Collectors.toList());
     }
 }

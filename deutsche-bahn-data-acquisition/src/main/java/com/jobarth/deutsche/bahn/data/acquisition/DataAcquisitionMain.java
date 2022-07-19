@@ -1,6 +1,7 @@
 package com.jobarth.deutsche.bahn.data.acquisition;
 
 import com.google.common.collect.Lists;
+import com.jobarth.deutsche.bahn.data.acquisition.server.StationServer;
 import com.jobarth.deutsche.bahn.data.acquisition.server.TimetableServer;
 import org.quartz.Scheduler;
 import org.quartz.impl.StdSchedulerFactory;
@@ -58,9 +59,10 @@ public class DataAcquisitionMain {
     }
     
     @Bean
-    CommandLineRunner runServer(TimetableServer timetableServer) {
+    CommandLineRunner runServer(TimetableServer timetableServer, StationServer stationServer) {
         return args -> {
             timetableServer.start();
+            stationServer.start();
         };
     }
 }
