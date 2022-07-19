@@ -3,6 +3,8 @@ package com.jobarth.deutsche.bahn.data.acquisition.server;
 import com.jobarth.deutsche.bahn.data.acquisition.TimetableManagerImpl;
 import com.jobarth.deutsche.bahn.data.acquisition.filter.CopyDepartedTimetableFilter;
 import io.grpc.stub.StreamObserver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,6 +14,8 @@ import java.time.ZoneId;
 
 @Service
 public class TimetableServiceImpl extends TimetableServiceGrpc.TimetableServiceImplBase {
+
+    private final static Logger LOGGER = LoggerFactory.getLogger(TimetableServiceImpl.class);
 
     @Autowired
     private TimetableManagerImpl timetableManager;
@@ -25,6 +29,8 @@ public class TimetableServiceImpl extends TimetableServiceGrpc.TimetableServiceI
             String eva = request.getEva();
             String stationName = timetableManager.get(eva).getStation();
             long timestamp = request.getDepartedAfter();
+            LOGGER.info("Received request for {} and departed after {}", request.getEva(), timestamp);
+
 
             LocalDateTime departedAfter = LocalDateTime.ofInstant(Instant.ofEpochSecond(timestamp), ZoneId.systemDefault());
 
@@ -49,6 +55,7 @@ public class TimetableServiceImpl extends TimetableServiceGrpc.TimetableServiceI
 
             responseObserver.onCompleted();
         } catch (Exception e) {
+            LOGGER.error("Exception occurred while fetching stops", e);
             responseObserver.onError(e);
         }
     }
