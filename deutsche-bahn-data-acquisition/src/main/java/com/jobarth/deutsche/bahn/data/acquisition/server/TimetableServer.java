@@ -15,7 +15,7 @@ public class TimetableServer {
 
     public void start() throws InterruptedException, IOException {
         Server server = ServerBuilder
-                .forPort(8080)
+                .forPort(5000)
                 .addService(timetableService)
                 .build();
         server.start();
